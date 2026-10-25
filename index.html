@@ -476,9 +476,14 @@
 
                                 <!-- แผนการลงทุนจริงของ กบข. (GPF Investment Plans) -->
                                 <div>
-                                    <label class="block text-[11px] font-semibold text-slate-700 mb-1">
-                                        <i class="fa-solid fa-chart-pie text-navy-600"></i> แผนการลงทุน กบข. (ตามแอป My GPF)
-                                    </label>
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <label class="block text-[11px] font-semibold text-slate-700">
+                                            <i class="fa-solid fa-chart-pie text-navy-600"></i> แผนการลงทุน กบข. (ตามแอป My GPF)
+                                        </label>
+                                        <button type="button" onclick="openGpfPlanModal()" class="text-[10px] text-navy-700 hover:text-navy-900 font-bold bg-navy-50 hover:bg-navy-100 border border-navy-200 px-2 py-0.5 rounded-md flex items-center gap-1 transition-all cursor-pointer">
+                                            <i class="fa-solid fa-circle-info text-navy-600"></i> เจาะลึกทุกแผน กบข.
+                                        </button>
+                                    </div>
                                     <select id="gpf-plan-select" onchange="onGpfPlanChange()" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white text-navy-800 outline-none">
                                         <option value="1.8">แผนตลาดเงิน (เสี่ยงต่ำสุด ผลตอบแทน ~1.8%/ปี)</option>
                                         <option value="2.8">แผนตราสารหนี้ (พันธบัตรรัฐบาล ผลตอบแทน ~2.8%/ปี)</option>
@@ -498,6 +503,11 @@
                                                 <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">%</span>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <!-- ข้อมูลสรุปของแผนที่เลือก (Dynamic Plan Details) -->
+                                    <div id="gpf-plan-detail-card" class="mt-2.5 p-3 rounded-xl bg-white border border-slate-200/90 text-xs shadow-xs space-y-1.5">
+                                        <!-- โหลดข้อมูลแผนอัตโนมัติ -->
                                     </div>
                                 </div>
 
@@ -1870,6 +1880,198 @@
             onGpfSliderChange(pct);
         }
 
+        // ==========================================
+        // ข้อมูล 6 แผนการลงทุนจริง กบข. (GPF Investment Plans Data)
+        // ==========================================
+        const GPF_PLANS_DATA = {
+            '1.8': {
+                key: '1.8',
+                name: 'แผนตลาดเงิน (Money Market)',
+                shortName: 'แผนตลาดเงิน',
+                icon: 'fa-vault',
+                iconColor: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+                riskLevel: 1,
+                riskMax: 8,
+                riskText: 'ระดับ 1: เสี่ยงต่ำมาก',
+                riskBadgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                expectedReturn: 1.8,
+                expectedReturnRange: '1.5% - 2.2% ต่อปี',
+                policy: 'ลงทุนในเงินฝากธนาคาร และตราสารหนี้ภาครัฐ/เอกชนระยะสั้นที่มีอายุไม่เกิน 1 ปี',
+                assetAllocationText: 'เงินฝากและตราสารหนี้ระยะสั้น 100%',
+                targetProfile: 'เหมาะสำหรับคุณครูที่เหลืออายุราชการน้อยกว่า 1-2 ปี (อายุ 58-60 ปี) หรือผู้ที่ไม่ต้องการรับความเสี่ยงจากการลดลงของเงินต้นเลยแม้แต่น้อย',
+                pros: 'ความปลอดภัยสูงสุด เงินต้นไม่ผันผวนตามตลาดทุน เหมาะกับการพักเงินก่อนรับบำนาญ',
+                cons: 'ผลตอบแทนต่ำที่สุด อาจเติบโตไม่ชนะอัตราเงินเฟ้อในระยะยาว'
+            },
+            '2.8': {
+                key: '2.8',
+                name: 'แผนตราสารหนี้ (Fixed Income)',
+                shortName: 'แผนตราสารหนี้',
+                icon: 'fa-file-invoice-dollar',
+                iconColor: 'text-teal-600 bg-teal-50 border-teal-200',
+                riskLevel: 2,
+                riskMax: 8,
+                riskText: 'ระดับ 2: เสี่ยงต่ำ',
+                riskBadgeClass: 'bg-teal-100 text-teal-800 border-teal-300',
+                expectedReturn: 2.8,
+                expectedReturnRange: '2.3% - 3.5% ต่อปี',
+                policy: 'ลงทุนในพันธบัตรรัฐบาล พันธบัตร ธปท. และตราสารหนี้ภาคเอกชนชั้นดี (Investment Grade)',
+                assetAllocationText: 'พันธบัตรรัฐบาลและตราสารหนี้ชั้นดี 100%',
+                targetProfile: 'เหมาะสำหรับครูที่รับความเสี่ยงได้ต่ำ ไม่ต้องการลงทุนในหุ้น แต่ต้องการผลตอบแทนที่สูงและสม่ำเสมอกว่าเงินฝาก',
+                pros: 'ได้รับกระแสรายได้ดอกเบี้ยสม่ำเสมอ ผันผวนต่ำมาก เงินต้นค่อนข้างปลอดภัย',
+                cons: 'อาจมีความผันผวนของราคาเล็กน้อยตามทิศทางดอกเบี้ยนโยบาย'
+            },
+            '3.8': {
+                key: '3.8',
+                name: 'แผนหลัก Core Plan (แผนเริ่มต้นเดิม)',
+                shortName: 'แผนหลัก (Default)',
+                icon: 'fa-shield-halved',
+                iconColor: 'text-blue-600 bg-blue-50 border-blue-200',
+                riskLevel: 5,
+                riskMax: 8,
+                riskText: 'ระดับ 5: เสี่ยงปานกลางค่อนข้างสูง',
+                riskBadgeClass: 'bg-blue-100 text-blue-800 border-blue-300',
+                expectedReturn: 3.8,
+                expectedReturnRange: '3.0% - 4.5% ต่อปี',
+                policy: 'กระจายลงทุนแบบ Multi-Asset ทั้งตราสารหนี้ หุ้นไทย หุ้นต่างประเทศ และอสังหาริมทรัพย์',
+                assetAllocationText: 'ตราสารหนี้ ~60% | หุ้นไทย ~10% | หุ้นโลก ~15% | สินทรัพย์ทางเลือก ~15%',
+                targetProfile: 'เป็นแผนตั้งต้นของสมาชิก กบข. ทุกคน เหมาะสำหรับผู้ที่ต้องการผลตอบแทนปานกลางและกระจายความเสี่ยงสมดุล',
+                pros: 'กระจายความเสี่ยงหลากหลายสินทรัพย์ เป็นแผนมาตรฐานที่มั่นคง',
+                cons: 'สำหรับครูรุ่นใหม่ สัดส่วนหุ้น 25% อาจน้อยเกินไปที่จะเร่งผลตอบแทนทบต้นตลอด 20-30 ปี'
+            },
+            '4.8': {
+                key: '4.8',
+                name: 'แผนสมดุลตามอายุ (Life Path Plan)',
+                shortName: 'แผนสมดุลตามอายุ (Life Path)',
+                isRecommended: true,
+                icon: 'fa-compass',
+                iconColor: 'text-amber-600 bg-amber-50 border-amber-300',
+                riskLevel: 4,
+                riskMax: 8,
+                riskText: 'ปรับอัตโนมัติตามวัย (ระดับ 3 - 6)',
+                riskBadgeClass: 'bg-amber-100 text-amber-900 border-amber-300 font-extrabold',
+                expectedReturn: 4.8,
+                expectedReturnRange: '4.5% - 5.5% ต่อปี (เฉลี่ยตลอดชีพ)',
+                policy: 'กบข. บริหารปรับสัดส่วน "หุ้น" และ "ตราสารหนี้" ให้อัตโนมัติทุกปีตามอายุ เพื่อเร่งผลตอบแทนตอนวัยทำงาน และลดความเสี่ยงปกป้องเงินก้อนเมื่อใกล้เกษียณ',
+                assetAllocationText: 'สัดส่วนหุ้น: <45 ปี (65%), 45-50 ปี (45%), 50-55 ปี (30%), 55-60 ปี (15%)',
+                targetProfile: '⭐ แนะนำอันดับ 1 สำหรับข้าราชการครูทุกคน ทุกช่วงอายุ ที่ต้องการให้เงินเกษียณงอกเงยสูงสุดตามหลักสากลโดยไม่ต้องบริหารพอร์ตเอง',
+                pros: 'ระบบปรับลดความเสี่ยงให้อัตโนมัติในวันเกิดทุกปี ไม่ต้องจับจังหวะตลาด ได้ผลตอบแทนเหมาะสมตามวัย',
+                cons: 'อาจมีความผันผวนในวัยเริ่มต้นเนื่องจากมีสัดส่วนหุ้นสูงเพื่อการเติบโต'
+            },
+            '5.8': {
+                key: '5.8',
+                name: 'แผนตราสารทุนไทย (Thai Equity)',
+                shortName: 'แผนตราสารทุนไทย',
+                icon: 'fa-chart-line',
+                iconColor: 'text-orange-600 bg-orange-50 border-orange-200',
+                riskLevel: 6,
+                riskMax: 8,
+                riskText: 'ระดับ 6: เสี่ยงสูง',
+                riskBadgeClass: 'bg-orange-100 text-orange-800 border-orange-300',
+                expectedReturn: 5.8,
+                expectedReturnRange: '4.5% - 8.0% ต่อปี',
+                policy: 'ลงทุนในหุ้นสามัญของบริษัทจดทะเบียนในตลาดหลักทรัพย์แห่งประเทศไทย (SET Index) 100%',
+                assetAllocationText: 'หุ้นไทย (SET Index) 100%',
+                targetProfile: 'เหมาะสำหรับครูที่มีความรู้ความเข้าใจในตลาดหุ้นไทย เชื่อมั่นในการเติบโตของเศรษฐกิจไทย และรับความผันผวนได้สูง',
+                pros: 'โอกาสได้รับเงินปันผลและการเติบโตของบริษัทชั้นนำในประเทศไทย',
+                cons: 'ความผันผวนสูง กระจุกตัวเฉพาะตลาดหุ้นไทย หากตลาดซบเซาผลตอบแทนอาจติดลบ'
+            },
+            '6.8': {
+                key: '6.8',
+                name: 'แผนหุ้นต่างประเทศ (Global Equity)',
+                shortName: 'แผนหุ้นต่างประเทศ',
+                icon: 'fa-earth-americas',
+                iconColor: 'text-rose-600 bg-rose-50 border-rose-200',
+                riskLevel: 7,
+                riskMax: 8,
+                riskText: 'ระดับ 7: เสี่ยงสูงมาก',
+                riskBadgeClass: 'bg-rose-100 text-rose-800 border-rose-300',
+                expectedReturn: 6.8,
+                expectedReturnRange: '6.0% - 9.0%+ ต่อปี',
+                policy: 'ลงทุนในหุ้นบริษัทชั้นนำระดับโลกทั่วโลก (สหรัฐอเมริกา ยุโรป ญี่ปุ่น เอเชีย) เกาะกระแส Mega Trends และเทคโนโลยีโลก',
+                assetAllocationText: 'หุ้นบริษัทชั้นนำระดับโลก 100%',
+                targetProfile: 'เหมาะสำหรับครูรุ่นใหม่ (อายุ 25-45 ปี) ที่มีระยะเวลาลงทุนเกิน 10-15 ปีขึ้นไป และต้องการผลตอบแทนเติบโตสูงสุดเพื่อเอาชนะเงินเฟ้อ',
+                pros: 'โอกาสสร้างผลตอบแทนสูงสุด กระจายความเสี่ยงไปยังเศรษฐกิจและเทคโนโลยีระดับโลก',
+                cons: 'มีความผันผวนของราคาหุ้นโลกและอัตราแลกเปลี่ยนสูง เหมาะกับการลงทุนระยะยาวเท่านั้น'
+            },
+            'custom': {
+                key: 'custom',
+                name: 'กำหนดอัตราผลตอบแทนเอง (Custom DIY)',
+                shortName: 'กำหนดเอง (DIY)',
+                icon: 'fa-sliders',
+                iconColor: 'text-purple-600 bg-purple-50 border-purple-200',
+                riskLevel: 0,
+                riskMax: 8,
+                riskText: 'กำหนดตามการจัดพอร์ตของสมาชิก',
+                riskBadgeClass: 'bg-purple-100 text-purple-800 border-purple-300',
+                expectedReturn: 4.8,
+                expectedReturnRange: 'ตามที่ผู้ใช้กำหนด',
+                policy: 'ในแอป My GPF สมาชิกสามารถผสมแผนเองได้ถึง 4 แผน (เช่น แผนหุ้นต่างประเทศ 50% + แผนหลัก 50% หรือผสมแผนทองคำ/อสังหาริมทรัพย์)',
+                assetAllocationText: 'จัดสัดส่วนผสมเองตามความต้องการ',
+                targetProfile: 'เหมาะสำหรับครูที่มีความเชี่ยวชาญด้านการลงทุน และต้องการผสมสินทรัพย์ตามกลยุทธ์ส่วนตัว',
+                pros: 'ยืดหยุ่นสูงสุด เลือกผสมแผนได้ตามใจชอบในแอป My GPF',
+                cons: 'ต้องมีความรู้ความเข้าใจและติดตามพอร์ตด้วยตนเอง'
+            }
+        };
+
+        function updateGpfPlanInfoCard(planKey) {
+            const card = document.getElementById('gpf-plan-detail-card');
+            if (!card) return;
+            const plan = GPF_PLANS_DATA[planKey] || GPF_PLANS_DATA['4.8'];
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                    <div class="flex items-center gap-1.5 font-bold text-navy-900 text-xs">
+                        <span>${plan.name}</span>
+                        ${plan.isRecommended ? '<span class="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-100 text-amber-900 border border-amber-300">⭐ กบข. แนะนำ</span>' : ''}
+                    </div>
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold border ${plan.riskBadgeClass}">${plan.riskText}</span>
+                </div>
+                <div class="space-y-1.5 text-[11px] text-slate-600">
+                    <div class="flex items-start gap-1.5">
+                        <span class="font-bold text-slate-700 shrink-0">📊 สัดส่วน:</span>
+                        <span class="text-slate-600">${plan.assetAllocationText}</span>
+                    </div>
+                    <div class="flex items-start gap-1.5">
+                        <span class="font-bold text-slate-700 shrink-0">🎯 เหมาะสำหรับ:</span>
+                        <span class="text-slate-600">${plan.targetProfile}</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-[10px]">
+                        <span class="text-emerald-700 font-bold"><i class="fa-solid fa-chart-line"></i> คาดหวัง: ${plan.expectedReturnRange}</span>
+                        <button type="button" onclick="openGpfPlanModal()" class="text-navy-700 hover:text-navy-900 font-bold underline flex items-center gap-1 cursor-pointer">
+                            ดูข้อมูลเปรียบเทียบทุกแผน <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openGpfPlanModal() {
+            const modal = document.getElementById('modal-gpf-plans');
+            if (modal) {
+                modal.classList.remove('hidden');
+                if (document.body) document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        function closeGpfPlanModal() {
+            const modal = document.getElementById('modal-gpf-plans');
+            if (modal) {
+                modal.classList.add('hidden');
+                if (document.body) document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        function selectGpfPlanFromModal(planKey) {
+            const select = document.getElementById('gpf-plan-select');
+            if (select) {
+                select.value = planKey;
+                onGpfPlanChange();
+            }
+            closeGpfPlanModal();
+            const planName = GPF_PLANS_DATA[planKey]?.shortName || 'แผนการลงทุน';
+            showToast(`เปลี่ยนเป็น ${planName} เรียบร้อยแล้ว`);
+        }
+
         function onGpfPlanChange() {
             const planSelect = document.getElementById('gpf-plan-select');
             const customBox = document.getElementById('gpf-custom-rate-box');
@@ -1884,6 +2086,7 @@
                 if (customBox) customBox.classList.add('hidden');
                 if (returnPctInput) returnPctInput.value = planSelect.value;
             }
+            updateGpfPlanInfoCard(planSelect.value);
             runSimulation();
         }
 
@@ -2925,12 +3128,330 @@
         window.onload = function() {
             loadFormData();
             selectSingleRank(currentSingleRank || 'คศ.1');
+            updateGpfPlanInfoCard(document.getElementById('gpf-plan-select')?.value || '4.8');
             runSimulation();
             calculatePA();
             calculateTax();
             calculateDebt();
         };
+
+        // ปิด Modal เมื่อกดปุ่ม Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeGpfPlanModal();
+            }
+        });
     </script>
+
+    <!-- Modal: ข้อมูลเจาะลึก 6 แผนการลงทุนจริง กบข. -->
+    <div id="modal-gpf-plans" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 hidden" onclick="if(event.target === this) closeGpfPlanModal()">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-navy-900 via-navy-800 to-navy-950 text-white p-5 sm:p-6 flex items-start justify-between gap-4 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-gold-400/20 text-gold-300 border border-gold-400/40 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-lg sm:text-xl font-bold text-white">ข้อมูลเจาะลึก 6 แผนการลงทุนจริง กบข. (My GPF)</h3>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-gold-400 text-navy-950">6 แผนมาตรฐาน</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mt-1">เปรียบเทียบนโยบาย สัดส่วนสินทรัพย์ ระดับความเสี่ยง และผลตอบแทนคาดหวัง เพื่อผลประโยชน์สูงสุดของครู</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeGpfPlanModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-base transition-all shrink-0 cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-6 text-slate-700 text-xs">
+                
+                <!-- Notice Banner -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/80 rounded-2xl p-4 flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div class="text-xs leading-relaxed">
+                        <span class="font-bold text-blue-950">สิทธิประโยชน์สำคัญของสมาชิก กบข.:</span>
+                        <p class="text-blue-900/90 mt-0.5">ข้าราชการครูสามารถเปลี่ยนแผนการลงทุนได้ <b>ฟรีปีละ 12 ครั้ง (เดือนละ 1 ครั้ง)</b> โดยไม่มีค่าธรรมเนียมใดๆ ทั้งสิ้น ผ่านแอปพลิเคชัน <b>My GPF</b> หรือเว็บไซต์ กบข. ซึ่งการเลือกแผนที่สอดคล้องกับช่วงอายุราชการจะช่วยให้เงินก้อนเกษียณงอกเงยทบต้นได้มากกว่าแผนเดิมอย่างมหาศาล</p>
+                    </div>
+                </div>
+
+                <!-- 6 Plans Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- 1. แผนตลาดเงิน -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4.5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+                                        <i class="fa-solid fa-vault"></i>
+                                    </div>
+                                    <span class="font-bold text-sm text-navy-900">1. แผนตลาดเงิน</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">เสี่ยงต่ำมาก (ระดับ 1)</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-2.5 mb-2.5 border border-slate-100 space-y-1 text-[11px]">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ผลตอบแทนคาดหวัง:</span>
+                                    <span class="font-extrabold text-emerald-700">~1.8% ต่อปี (1.5% - 2.2%)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">สัดส่วนสินทรัพย์:</span>
+                                    <span class="font-semibold text-slate-800">เงินฝาก & ตราสารหนี้ระยะสั้น 100%</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 text-[11px] text-slate-600">
+                                <p>• <b>นโยบาย:</b> ลงทุนในเงินฝากธนาคาร และตราสารหนี้ระยะสั้นอายุไม่เกิน 1 ปี เน้นความมั่นคงสูงสุด</p>
+                                <p>• <b>เหมาะสำหรับ:</b> ครูที่เหลืออายุราชการน้อยกว่า 1-2 ปี (อายุ 58-60 ปี) หรือผู้ที่ไม่ต้องการรับความเสี่ยงจากการลดลงของเงินต้นเลย</p>
+                                <p>• <b>จุดเด่น/ข้อควรระวัง:</b> เงินต้นปลอดภัย ไม่ติดลบ แต่ผลตอบแทนต่ำอาจไม่ชนะเงินเฟ้อ</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-3 border-t border-slate-100">
+                            <button type="button" onclick="selectGpfPlanFromModal('1.8')" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-navy-800 hover:text-white text-navy-900 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-check"></i> เลือกใช้แผนนี้ในการจำลอง
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. แผนตราสารหนี้ -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4.5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-sm font-bold">
+                                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                                    </div>
+                                    <span class="font-bold text-sm text-navy-900">2. แผนตราสารหนี้</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-teal-100 text-teal-800 border border-teal-200">เสี่ยงต่ำ (ระดับ 2)</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-2.5 mb-2.5 border border-slate-100 space-y-1 text-[11px]">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ผลตอบแทนคาดหวัง:</span>
+                                    <span class="font-extrabold text-teal-700">~2.8% ต่อปี (2.3% - 3.5%)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">สัดส่วนสินทรัพย์:</span>
+                                    <span class="font-semibold text-slate-800">พันธบัตรรัฐบาล & หุ้นกู้ 100%</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 text-[11px] text-slate-600">
+                                <p>• <b>นโยบาย:</b> ลงทุนในพันธบัตรรัฐบาล พันธบัตร ธปท. และตราสารหนี้ภาคเอกชนชั้นดี (Investment Grade)</p>
+                                <p>• <b>เหมาะสำหรับ:</b> ครูที่รับความเสี่ยงได้ต่ำ ต้องการผลตอบแทนสม่ำเสมอชนะเงินฝาก แต่ไม่ต้องการลงทุนหุ้น</p>
+                                <p>• <b>จุดเด่น/ข้อควรระวัง:</b> ได้รับดอกเบี้ยสม่ำเสมอ ผันผวนต่ำมาก อาจมีราคาแกว่งตามดอกเบี้ยตลาด</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-3 border-t border-slate-100">
+                            <button type="button" onclick="selectGpfPlanFromModal('2.8')" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-navy-800 hover:text-white text-navy-900 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-check"></i> เลือกใช้แผนนี้ในการจำลอง
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. แผนหลัก (Default Core Plan) -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4.5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </div>
+                                    <span class="font-bold text-sm text-navy-900">3. แผนหลัก (Core Plan)</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">ปานกลางค่อนข้างสูง (ระดับ 5)</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-2.5 mb-2.5 border border-slate-100 space-y-1 text-[11px]">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ผลตอบแทนคาดหวัง:</span>
+                                    <span class="font-extrabold text-blue-700">~3.8% ต่อปี (3.0% - 4.5%)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">สัดส่วนสินทรัพย์:</span>
+                                    <span class="font-semibold text-slate-800">ตราสารหนี้ 60% | หุ้น 25% | อื่นๆ 15%</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 text-[11px] text-slate-600">
+                                <p>• <b>นโยบาย:</b> กระจายลงทุนผสมผสาน Multi-Asset ทั้งตราสารหนี้ หุ้นไทย หุ้นต่างประเทศ และอสังหาริมทรัพย์</p>
+                                <p>• <b>เหมาะสำหรับ:</b> สมาชิกทั่วไปที่ไม่ได้เลือกเปลี่ยนแผน เป็นแผนมาตรฐานที่ กบข. กำหนดไว้ตั้งแต่เริ่มบรรจุ</p>
+                                <p>• <b>จุดเด่น/ข้อควรระวัง:</b> กระจายความเสี่ยงดี แต่สำหรับครูรุ่นใหม่อาจสร้างผลตอบแทนได้ไม่เต็มศักยภาพ</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-3 border-t border-slate-100">
+                            <button type="button" onclick="selectGpfPlanFromModal('3.8')" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-navy-800 hover:text-white text-navy-900 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-check"></i> เลือกใช้แผนนี้ในการจำลอง
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4. แผนสมดุลตามอายุ (Life Path Plan) - FEATURED -->
+                    <div class="rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50/50 via-white to-gold-50/40 p-4.5 shadow-md hover:shadow-lg transition-all flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute -right-8 -top-8 w-24 h-24 bg-amber-200/40 rounded-full blur-xl pointer-events-none"></div>
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center text-sm font-bold shadow-xs">
+                                        <i class="fa-solid fa-compass"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-extrabold text-sm text-navy-950">4. แผนสมดุลตามอายุ (Life Path)</span>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-400 text-navy-950 shadow-2xs">⭐ แนะนำอันดับ 1</span>
+                            </div>
+                            <div class="bg-white/80 rounded-xl p-2.5 mb-2.5 border border-amber-200/80 space-y-1 text-[11px]">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-600 font-medium">ผลตอบแทนคาดหวังเฉลี่ย:</span>
+                                    <span class="font-black text-amber-800 text-xs">~4.8% ต่อปี (4.5% - 5.5%)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-600 font-medium">ระดับความเสี่ยง:</span>
+                                    <span class="font-bold text-navy-800">ปรับลดอัตโนมัติตามช่วงอายุ (ระดับ 3 - 6)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Life Path 4 Stages Table -->
+                            <div class="space-y-1 mb-2.5">
+                                <div class="text-[10px] font-bold text-amber-900 uppercase">สัดส่วนการลงทุนตามช่วงอายุ (ปรับอัตโนมัติ):</div>
+                                <div class="grid grid-cols-2 gap-1.5 text-[10px]">
+                                    <div class="p-1.5 rounded-lg bg-white border border-amber-200/60">
+                                        <div class="font-bold text-navy-900">อายุ &lt; 45 ปี: หุ้น 65%</div>
+                                        <div class="text-slate-500 text-[9px]">เร่งผลตอบแทนทบต้นวัยเริ่มต้น</div>
+                                    </div>
+                                    <div class="p-1.5 rounded-lg bg-white border border-amber-200/60">
+                                        <div class="font-bold text-navy-900">อายุ 45-50 ปี: หุ้น 45%</div>
+                                        <div class="text-slate-500 text-[9px]">เริ่มลดความเสี่ยง เสริมเสถียรภาพ</div>
+                                    </div>
+                                    <div class="p-1.5 rounded-lg bg-white border border-amber-200/60">
+                                        <div class="font-bold text-navy-900">อายุ 50-55 ปี: หุ้น 30%</div>
+                                        <div class="text-slate-500 text-[9px]">เน้นปกป้องผลกำไรสะสม</div>
+                                    </div>
+                                    <div class="p-1.5 rounded-lg bg-white border border-amber-200/60">
+                                        <div class="font-bold text-navy-900">อายุ 55-60 ปี: หุ้น 15%</div>
+                                        <div class="text-slate-500 text-[9px]">เน้นรักษาเงินต้นเตรียมรับบำนาญ</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-[11px] text-slate-700 leading-relaxed">
+                                • <b>จุดเด่น:</b> "เลือกครั้งเดียว ระบบดูแลให้ตลอดชีวิต" กบข. จะปรับลดหุ้นให้อัตโนมัติในวันเกิดทุกปี ไม่ต้องจับจังหวะตลาด ได้ผลตอบแทนคุ้มค่าที่สุด
+                            </p>
+                        </div>
+                        <div class="pt-3 mt-3 border-t border-amber-200">
+                            <button type="button" onclick="selectGpfPlanFromModal('4.8')" class="w-full py-2 rounded-xl bg-gradient-to-r from-navy-800 to-navy-900 hover:from-navy-900 hover:to-navy-950 text-gold-300 font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
+                                <i class="fa-solid fa-star text-gold-400"></i> เลือกใช้แผนสมดุลตามอายุ (แนะนำ)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5. แผนตราสารทุนไทย -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4.5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center text-sm font-bold">
+                                        <i class="fa-solid fa-chart-line"></i>
+                                    </div>
+                                    <span class="font-bold text-sm text-navy-900">5. แผนตราสารทุนไทย</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-100 text-orange-800 border border-orange-200">เสี่ยงสูง (ระดับ 6)</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-2.5 mb-2.5 border border-slate-100 space-y-1 text-[11px]">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ผลตอบแทนคาดหวัง:</span>
+                                    <span class="font-extrabold text-orange-700">~5.8% ต่อปี (4.5% - 8.0%)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">สัดส่วนสินทรัพย์:</span>
+                                    <span class="font-semibold text-slate-800">หุ้นไทย (SET Index) 100%</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 text-[11px] text-slate-600">
+                                <p>• <b>นโยบาย:</b> ลงทุนในหุ้นสามัญของบริษัทจดทะเบียนในตลาดหลักทรัพย์แห่งประเทศไทย (SET Index) 100%</p>
+                                <p>• <b>เหมาะสำหรับ:</b> ครูที่เข้าใจตลาดหุ้นไทย เชื่อมั่นในเศรษฐกิจไทย และยอมรับความผันผวนของราคาหุ้นได้</p>
+                                <p>• <b>จุดเด่น/ข้อควรระวัง:</b> โอกาสรับเงินปันผลและการเติบโต แต่กระจุกตัวเฉพาะหุ้นไทย ผันผวนสูง</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-3 border-t border-slate-100">
+                            <button type="button" onclick="selectGpfPlanFromModal('5.8')" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-navy-800 hover:text-white text-navy-900 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-check"></i> เลือกใช้แผนนี้ในการจำลอง
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 6. แผนหุ้นต่างประเทศ -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4.5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center text-sm font-bold">
+                                        <i class="fa-solid fa-earth-americas"></i>
+                                    </div>
+                                    <span class="font-bold text-sm text-navy-900">6. แผนหุ้นต่างประเทศ</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">เสี่ยงสูงมาก (ระดับ 7)</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-2.5 mb-2.5 border border-slate-100 space-y-1 text-[11px]">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ผลตอบแทนคาดหวัง:</span>
+                                    <span class="font-extrabold text-rose-700">~6.8% ต่อปี (6.0% - 9.0%+)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">สัดส่วนสินทรัพย์:</span>
+                                    <span class="font-semibold text-slate-800">หุ้นบริษัทชั้นนำระดับโลก 100%</span>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 text-[11px] text-slate-600">
+                                <p>• <b>นโยบาย:</b> ลงทุนในหุ้นของบริษัทชั้นนำระดับโลกทั่วโลก (สหรัฐอเมริกา ยุโรป ญี่ปุ่น เอเชีย) เกาะกระแส Mega Trends</p>
+                                <p>• <b>เหมาะสำหรับ:</b> ครูรุ่นใหม่ (อายุ 25-45 ปี) ที่มีระยะเวลาลงทุนเกิน 10-15 ปีขึ้นไป ต้องการสร้างผลตอบแทนสูงสุดชนะเงินเฟ้อ</p>
+                                <p>• <b>จุดเด่น/ข้อควรระวัง:</b> ผลตอบแทนคาดหวังสูงสุด แต่มีความผันผวนของราคาและค่าเงินสูง เหมาะกับการลงทุนยาว</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-3 border-t border-slate-100">
+                            <button type="button" onclick="selectGpfPlanFromModal('6.8')" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-navy-800 hover:text-white text-navy-900 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-check"></i> เลือกใช้แผนนี้ในการจำลอง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- วิธีเปลี่ยนแผนในแอป My GPF -->
+                <div class="bg-slate-50 rounded-2xl p-4.5 border border-slate-200">
+                    <h4 class="font-bold text-navy-900 text-xs flex items-center gap-1.5 mb-2.5">
+                        <i class="fa-solid fa-mobile-screen-button text-navy-600"></i> ขั้นตอนการเปลี่ยนแผนการลงทุนจริงในแอป My GPF (ทำได้ทันที):
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 rounded-xl bg-white border border-slate-200/80">
+                            <div class="w-6 h-6 rounded-full bg-navy-600 text-white font-bold flex items-center justify-center text-xs mb-1.5">1</div>
+                            <div class="font-bold text-navy-900">เปิดแอป My GPF</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">ล็อกอินเข้าแอป > ไปที่เมนู "แผนการลงทุน" > เลือก "เปลี่ยนแผนการลงทุน"</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white border border-slate-200/80">
+                            <div class="w-6 h-6 rounded-full bg-navy-600 text-white font-bold flex items-center justify-center text-xs mb-1.5">2</div>
+                            <div class="font-bold text-navy-900">เลือกแผนที่ต้องการ</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">ทำแบบประเมินความเสี่ยง และเลือกแผนที่ต้องการ (เช่น แผนสมดุลตามอายุ)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white border border-slate-200/80">
+                            <div class="w-6 h-6 rounded-full bg-navy-600 text-white font-bold flex items-center justify-center text-xs mb-1.5">3</div>
+                            <div class="font-bold text-navy-900">ยืนยันรหัส OTP</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">กรอกรหัส OTP ยืนยัน ระบบจะเริ่มคำนวณเงินในแผนใหม่ให้ตามรอบทันที</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end shrink-0">
+                <button type="button" onclick="closeGpfPlanModal()" class="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition-all cursor-pointer">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Notification Element -->
     <div id="toast-notification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 bg-navy-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-gold-500/30">
