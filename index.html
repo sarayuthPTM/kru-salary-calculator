@@ -319,6 +319,97 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ตารางจำลองการเลื่อนเงินเดือนทุกรอบ (เม.ย. & ต.ค.) ในหน้าคำนวณแต่ละรอบ -->
+            <div class="mt-6 bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-base sm:text-lg font-bold text-navy-800 flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days text-gold-500"></i> ตารางจำลองการเลื่อนเงินเดือนทุกรอบ (เม.ย. & ต.ค.)
+                            </h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-navy-100 text-navy-800 border border-navy-200">จำลองต่อเนื่อง</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">
+                            จำลองความก้าวหน้าเงินเดือนในรอบถัดๆ ไป (1 เม.ย. และ 1 ต.ค.) จากอันดับและเงินเดือนที่เลือกด้านบน พร้อมคำนวณฐานบน-ล่างและปัดเศษ 10 บาทอัตโนมัติ
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 no-print">
+                        <!-- ตัวเลือกระยะเวลาจำลอง -->
+                        <div class="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200 text-xs">
+                            <span class="text-slate-500 pl-2 text-[11px] font-medium">ระยะเวลา:</span>
+                            <button type="button" onclick="setSingleSimDuration(5)" id="btn-single-dur-5" class="single-dur-btn px-2.5 py-1 rounded-lg font-bold bg-navy-700 text-white text-xs transition-all cursor-pointer">5 ปี (10 รอบ)</button>
+                            <button type="button" onclick="setSingleSimDuration(10)" id="btn-single-dur-10" class="single-dur-btn px-2.5 py-1 rounded-lg font-medium bg-white text-slate-600 hover:bg-slate-100 text-xs transition-all cursor-pointer">10 ปี (20 รอบ)</button>
+                            <button type="button" onclick="setSingleSimDuration(15)" id="btn-single-dur-15" class="single-dur-btn px-2.5 py-1 rounded-lg font-medium bg-white text-slate-600 hover:bg-slate-100 text-xs transition-all cursor-pointer">15 ปี (30 รอบ)</button>
+                        </div>
+                        <button type="button" onclick="copySingleSimSummary()" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-300 transition-all flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
+                            <i class="fa-brands fa-line text-sm text-emerald-600"></i> คัดลอกส่ง LINE
+                        </button>
+                        <button type="button" onclick="exportSingleSimCSV()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-file-csv text-emerald-600"></i> ดาวน์โหลด CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4 Quick Stats Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div class="text-[11px] text-slate-500 font-medium">เงินเดือนปัจจุบัน</div>
+                        <div id="single-sim-stat-start" class="text-base sm:text-lg font-extrabold text-slate-800 mt-0.5">0 ฿</div>
+                        <div id="single-sim-stat-rank" class="text-[10px] text-slate-500">อันดับปัจจุบัน</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                        <div class="text-[11px] text-emerald-700 font-medium">รอบถัดไป (รอบนี้)</div>
+                        <div id="single-sim-stat-round1" class="text-base sm:text-lg font-extrabold text-emerald-700 mt-0.5">0 ฿</div>
+                        <div id="single-sim-stat-round1-diff" class="text-[10px] text-emerald-600 font-semibold">+0 ฿</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200">
+                        <div class="text-[11px] text-indigo-700 font-medium">อีก 5 ปีข้างหน้า (10 รอบ)</div>
+                        <div id="single-sim-stat-5yr" class="text-base sm:text-lg font-extrabold text-indigo-800 mt-0.5">0 ฿</div>
+                        <div id="single-sim-stat-5yr-diff" class="text-[10px] text-indigo-600">รวมวิทยฐานะ</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-navy-50 border border-navy-200">
+                        <div class="text-[11px] text-navy-700 font-medium" id="single-sim-stat-end-title">สิ้นสุดการจำลอง</div>
+                        <div id="single-sim-stat-end" class="text-base sm:text-lg font-extrabold text-navy-900 mt-0.5">0 ฿</div>
+                        <div id="single-sim-stat-end-diff" class="text-[10px] text-slate-500">เติบโตจากเดิม</div>
+                    </div>
+                </div>
+
+                <!-- Simulation Table -->
+                <div class="overflow-x-auto max-h-[500px] overflow-y-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-xs sm:text-sm text-left border-collapse">
+                        <thead class="text-xs text-slate-600 bg-slate-100 sticky top-0 z-10 shadow-xs">
+                            <tr>
+                                <th class="py-2.5 px-3">รอบที่</th>
+                                <th class="py-2.5 px-3">รอบการเลื่อน</th>
+                                <th class="py-2.5 px-3">อันดับ</th>
+                                <th class="py-2.5 px-3">เงินเดือนเดิม</th>
+                                <th class="py-2.5 px-3">ฐานคำนวณ</th>
+                                <th class="py-2.5 px-3 text-center">ร้อยละ (%)</th>
+                                <th class="py-2.5 px-3 text-emerald-700">ได้เพิ่มจริง</th>
+                                <th class="py-2.5 px-3 font-bold text-navy-900">เงินเดือนใหม่</th>
+                                <th class="py-2.5 px-3">วิทยฐานะ</th>
+                                <th class="py-2.5 px-3 font-semibold text-emerald-700">รายรับรวม/ด.</th>
+                                <th class="py-2.5 px-3">สถานะ / ฐาน</th>
+                            </tr>
+                        </thead>
+                        <tbody id="single-sim-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3.5 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> ปัดเศษขึ้น 10 บาททุกรอบ</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> ขึ้นฐานบนอัตโนมัติ</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> อาศัยเบิกข้ามขั้นเมื่อเกินเพดาน</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400">
+                        * หากต้องการกำหนดอายุเลื่อนวิทยฐานะ คศ.2/คศ.3/คศ.4 หรือคำนวณบำนาญ กบข. ให้ดูที่แท็บ "จำลองอนาคต & กบข."
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- ==========================================
@@ -1806,6 +1897,193 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            // จำลองเงินเดือนทุกรอบต่อเนื่องในหน้าคำนวณแต่ละรอบ
+            renderSingleRoundSimulation(salary, currentSingleRank, percent, allowOverflow);
+        }
+
+        let singleSimDurationYears = 5;
+        let singleSimulationRows = [];
+
+        function getSingleSimulationRows() {
+            return singleSimulationRows;
+        }
+
+        function setSingleSimDuration(years) {
+            singleSimDurationYears = years;
+            document.querySelectorAll('.single-dur-btn').forEach(btn => {
+                btn.className = 'single-dur-btn px-2.5 py-1 rounded-lg font-medium bg-white text-slate-600 hover:bg-slate-100 text-xs transition-all cursor-pointer';
+            });
+            const activeBtn = document.getElementById('btn-single-dur-' + years);
+            if (activeBtn) {
+                activeBtn.className = 'single-dur-btn px-2.5 py-1 rounded-lg font-bold bg-navy-700 text-white text-xs transition-all cursor-pointer';
+            }
+            calculateSingle();
+        }
+
+        function renderSingleRoundSimulation(salary, rank, percent, allowOverflow) {
+            const tbody = document.getElementById('single-sim-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            singleSimulationRows = [];
+
+            const totalRounds = singleSimDurationYears * 2;
+            const now = new Date();
+            const curMonth = now.getMonth();
+            let curYearBE = now.getFullYear() + 543;
+            let isOct = (curMonth >= 3 && curMonth < 9); // เม.ย. - ก.ย. รอบถัดไปคือ ต.ค.
+            if (curMonth >= 9) {
+                isOct = false;
+                curYearBE += 1;
+            }
+
+            let curSalary = salary;
+            let curRank = rank;
+
+            for (let i = 1; i <= totalRounds; i++) {
+                const roundName = isOct ? '1 ต.ค.' : '1 เม.ย.';
+                const roundFullLabel = `${roundName} ${curYearBE}`;
+
+                const details = getCalculationDetails(curRank, curSalary, allowOverflow);
+                const rawInc = (details.base * percent) / 100;
+                const roundedInc = roundUpToTen(rawInc);
+                let nextSalary = curSalary + roundedInc;
+                let statusBadge = '';
+
+                if (nextSalary >= details.effectiveCeiling) {
+                    nextSalary = details.effectiveCeiling;
+                    statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[10px]">เต็มขั้น (พิเศษ +${Math.round(rawInc).toLocaleString()} บ.)</span>`;
+                } else if (curSalary < details.upperStart && nextSalary >= details.upperStart) {
+                    statusBadge = `<span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 font-extrabold text-[10px]">ขึ้นฐานบน! (${details.base.toLocaleString()} บ.)</span>`;
+                } else if (details.isOverflowing) {
+                    statusBadge = `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px]">อาศัยเบิก ${details.overflowRankName}</span>`;
+                } else {
+                    const bgClass = details.tier === 'บน' ? 'bg-indigo-50 text-indigo-700' : 'bg-amber-50 text-amber-700';
+                    statusBadge = `<span class="px-1.5 py-0.5 rounded ${bgClass} text-[10px] font-semibold">ฐาน${details.tier}</span>`;
+                }
+
+                const actualAdded = nextSalary - curSalary;
+                const totalIncome = nextSalary + details.allowance;
+
+                const rowData = {
+                    roundIndex: i,
+                    roundLabel: roundFullLabel,
+                    rank: curRank,
+                    oldSalary: curSalary,
+                    base: details.base,
+                    tier: details.tier,
+                    pct: percent,
+                    added: actualAdded,
+                    newSalary: nextSalary,
+                    allowance: details.allowance,
+                    totalIncome: totalIncome,
+                    statusHtml: statusBadge
+                };
+                singleSimulationRows.push(rowData);
+
+                const tr = document.createElement('tr');
+                tr.className = isOct ? 'bg-slate-50/60 hover:bg-navy-50/40' : 'hover:bg-navy-50/40';
+                tr.innerHTML = `
+                    <td class="py-2 px-3 font-bold text-slate-400 text-center">${i}</td>
+                    <td class="py-2 px-3 font-semibold text-navy-800">${roundFullLabel}</td>
+                    <td class="py-2 px-3 text-slate-700 font-medium">${curRank}</td>
+                    <td class="py-2 px-3 text-slate-600">${curSalary.toLocaleString()}</td>
+                    <td class="py-2 px-3 text-slate-500">${details.base.toLocaleString()} (${details.tier})</td>
+                    <td class="py-2 px-3 text-center text-slate-600">${percent.toFixed(2)}%</td>
+                    <td class="py-2 px-3 font-bold text-emerald-600">+${actualAdded.toLocaleString()}</td>
+                    <td class="py-2 px-3 font-extrabold text-navy-900">${nextSalary.toLocaleString()}</td>
+                    <td class="py-2 px-3 text-slate-500">${details.allowance > 0 ? '+' + details.allowance.toLocaleString() : '-'}</td>
+                    <td class="py-2 px-3 font-bold text-emerald-700">${totalIncome.toLocaleString()}</td>
+                    <td class="py-2 px-3">${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+
+                curSalary = nextSalary;
+                if (isOct) {
+                    isOct = false;
+                    curYearBE += 1;
+                } else {
+                    isOct = true;
+                }
+            }
+
+            // อัปเดต Quick Stats Cards
+            if (singleSimulationRows.length > 0) {
+                const r1 = singleSimulationRows[0];
+                const r5yr = singleSimulationRows[Math.min(9, singleSimulationRows.length - 1)];
+                const rEnd = singleSimulationRows[singleSimulationRows.length - 1];
+
+                const statStart = document.getElementById('single-sim-stat-start');
+                if (statStart) statStart.textContent = `${salary.toLocaleString()} ฿`;
+                const statRank = document.getElementById('single-sim-stat-rank');
+                if (statRank) statRank.textContent = `อันดับ: ${curRank}`;
+
+                const statR1 = document.getElementById('single-sim-stat-round1');
+                if (statR1) statR1.textContent = `${r1.newSalary.toLocaleString()} ฿`;
+                const statR1Diff = document.getElementById('single-sim-stat-round1-diff');
+                if (statR1Diff) statR1Diff.textContent = `+${r1.added.toLocaleString()} ฿ (${r1.roundLabel})`;
+
+                const stat5yr = document.getElementById('single-sim-stat-5yr');
+                if (stat5yr) stat5yr.textContent = `${r5yr.newSalary.toLocaleString()} ฿`;
+                const stat5yrDiff = document.getElementById('single-sim-stat-5yr-diff');
+                if (stat5yrDiff) stat5yrDiff.textContent = `รวมรับ: ${r5yr.totalIncome.toLocaleString()} ฿/ด.`;
+
+                const statEndTitle = document.getElementById('single-sim-stat-end-title');
+                if (statEndTitle) statEndTitle.textContent = `สิ้นสุดจำลอง (${singleSimDurationYears} ปี - รอบที่ ${singleSimulationRows.length})`;
+                const statEnd = document.getElementById('single-sim-stat-end');
+                if (statEnd) statEnd.textContent = `${rEnd.newSalary.toLocaleString()} ฿`;
+                const statEndDiff = document.getElementById('single-sim-stat-end-diff');
+                if (statEndDiff) statEndDiff.textContent = `เติบโต +${(rEnd.newSalary - salary).toLocaleString()} ฿ (${rEnd.totalIncome.toLocaleString()} ฿/ด.)`;
+            }
+        }
+
+        function exportSingleSimCSV() {
+            if (!singleSimulationRows.length) return;
+            let csvContent = "\uFEFFรอบที่,รอบการเลื่อน,อันดับ,เงินเดือนเดิม,ฐานในการคำนวณ,ระดับฐาน,ร้อยละ(%),เงินที่ได้เพิ่มจริง,เงินเดือนใหม่,เงินวิทยฐานะ,รายรับรวมต่อเดือน\n";
+            singleSimulationRows.forEach(r => {
+                csvContent += `${r.roundIndex},${r.roundLabel},${r.rank},${r.oldSalary},${r.base},${r.tier},${r.pct},${r.added},${r.newSalary},${r.allowance},${r.totalIncome}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `ตารางจำลองเลื่อนเงินเดือน_${currentSingleRank}_${singleSimDurationYears}ปี.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function copySingleSimSummary() {
+            if (!singleSimulationRows.length) return;
+            const r1 = singleSimulationRows[0];
+            const r5 = singleSimulationRows[Math.min(9, singleSimulationRows.length - 1)];
+            const rEnd = singleSimulationRows[singleSimulationRows.length - 1];
+            const salary = parseFloat(document.getElementById('single-salary')?.value) || 0;
+            const pct = parseFloat(document.getElementById('single-percent')?.value) || 3.0;
+
+            const text = [
+                `📊 สรุปตารางจำลองการเลื่อนเงินเดือนทุกรอบ (เม.ย. & ต.ค.)`,
+                `👤 อันดับ: ${currentSingleRank}`,
+                `💰 เงินเดือนปัจจุบัน: ${salary.toLocaleString()} บาท (อัตราเลื่อน ${pct.toFixed(2)}%/รอบ)`,
+                `---------------------------------`,
+                `• รอบถัดไป (${r1.roundLabel}): ${r1.newSalary.toLocaleString()} ฿ (+${r1.added.toLocaleString()} ฿)`,
+                `• อีก 5 ปีข้างหน้า (${r5.roundLabel}): ${r5.newSalary.toLocaleString()} ฿ (รวมรับ ${r5.totalIncome.toLocaleString()} ฿/ด.)`,
+                `• สิ้นสุด ${singleSimDurationYears} ปี (${rEnd.roundLabel}): ${rEnd.newSalary.toLocaleString()} ฿ (รวมรับ ${rEnd.totalIncome.toLocaleString()} ฿/ด.)`,
+                `📈 อัตราเติบโตสุทธิ: +${(rEnd.newSalary - salary).toLocaleString()} บาท`,
+                `---------------------------------`,
+                `คำนวณผ่านระบบคำนวณเงินเดือนข้าราชการครู ก.ค.ศ. ว20`
+            ].join('\n');
+
+            if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('คัดลอกสรุปตารางจำลองเงินเดือนเรียบร้อยแล้ว');
+                }).catch(() => {
+                    showToast('ไม่สามารถคัดลอกได้ กรุณาลองใหม่');
+                });
+            } else {
+                showToast('คัดลอกสรุปตารางจำลองเงินเดือนเรียบร้อยแล้ว');
+            }
         }
 
         // ====================================================
