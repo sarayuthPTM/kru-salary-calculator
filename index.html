@@ -113,16 +113,24 @@
                         <p class="text-xs sm:text-sm text-slate-300">คำนวณฐานบน-ล่าง ปัดเศษหลักสิบ จำลองเงินเดือนถึงอายุ 60 ปี และคำนวณบำนาญ</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 self-start md:self-auto">
-                    <button onclick="switchTab('tab-single')" id="btn-tab-single" class="tab-btn tab-active px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
+                    <button onclick="switchTab('tab-single')" id="btn-tab-single" class="tab-btn tab-active px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-calculator"></i>
                         <span>คำนวณแต่ละรอบ</span>
                     </button>
-                    <button onclick="switchTab('tab-future')" id="btn-tab-future" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                    <button onclick="switchTab('tab-future')" id="btn-tab-future" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-chart-line"></i>
-                        <span>จำลองอนาคต & เกษียณ</span>
+                        <span>จำลองอนาคต & กบข.</span>
                     </button>
-                    <button onclick="switchTab('tab-ref')" id="btn-tab-ref" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                    <button onclick="switchTab('tab-pa')" id="btn-tab-pa" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-hourglass-half text-gold-400"></i>
+                        <span>นับเวลา วPA</span>
+                    </button>
+                    <button onclick="switchTab('tab-tax')" id="btn-tab-tax" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-receipt text-gold-400"></i>
+                        <span>วางแผนภาษีครู</span>
+                    </button>
+                    <button onclick="switchTab('tab-ref')" id="btn-tab-ref" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-table"></i>
                         <span>ตารางฐาน & เกณฑ์</span>
                     </button>
@@ -415,6 +423,50 @@
                                 <span class="text-xs text-slate-600">เปิดใช้การอาศัยเบิกข้ามขั้น (กรณีเงินเดือนเต็มขั้นของตัวเอง ให้ไหลไปใช้เพดานของอันดับถัดไปได้ 1 ขั้น)</span>
                             </label>
                         </div>
+
+                        <!-- ตั้งค่า กบข. (GPF Simulator Settings) -->
+                        <div class="pt-3 border-t border-slate-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs font-bold text-navy-800 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-piggy-bank text-emerald-600"></i> จำลองเงินก้อน กบข.
+                                </label>
+                                <span class="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md font-bold">พ.ร.บ. กบข.</span>
+                            </div>
+                            <div class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                        <span>ยอดเงิน กบข. ยกมาล่าสุด (จากแอป My GPF)</span>
+                                    </div>
+                                    <div class="relative">
+                                        <input type="number" id="gpf-current-fund" value="150000" step="5000" min="0" oninput="runSimulation()" class="w-full pl-3 pr-10 py-1.5 rounded-lg border border-slate-300 font-bold text-slate-800 text-xs focus:border-navy-600 outline-none">
+                                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">บาท</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <span class="text-[11px] text-slate-600 block mb-1">สะสม (% เงินเดือน)</span>
+                                        <select id="gpf-member-pct" onchange="runSimulation()" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white text-navy-800 outline-none">
+                                            <option value="3" selected>3% (มาตรฐาน)</option>
+                                            <option value="5">5% (สะสมเพิ่ม)</option>
+                                            <option value="8">8% (สะสมเพิ่ม)</option>
+                                            <option value="10">10% (สะสมเพิ่ม)</option>
+                                            <option value="15">15% (สะสมเพิ่ม)</option>
+                                            <option value="20">20% (สะสมเพิ่ม)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <span class="text-[11px] text-slate-600 block mb-1">ผลตอบแทนเฉลี่ย</span>
+                                        <select id="gpf-return-pct" onchange="runSimulation()" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white text-emerald-700 outline-none">
+                                            <option value="2.5">2.5% (ตราสารหนี้)</option>
+                                            <option value="3.5" selected>3.5% (แผนหลัก)</option>
+                                            <option value="4.5">4.5% (สมดุลอายุ)</option>
+                                            <option value="5.5">5.5% (ตราสารทุน/หุ้น)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-slate-500 leading-tight">* รัฐสมทบให้อีก 3% + เงินชดเชย 2% รวม 5% ของเงินเดือนทุกเดือน พร้อมคิดดอกเบี้ยทบต้น</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -442,6 +494,44 @@
                             <div class="text-xs text-slate-500 font-medium">อายุที่เงินเดือนเริ่มตัน (เต็มขั้น)</div>
                             <div id="sim-max-age" class="text-2xl font-extrabold text-amber-600 mt-1">อายุ 54 ปี</div>
                             <div id="sim-max-desc" class="text-[11px] text-slate-400 mt-1">ได้รับเงินตอบแทนพิเศษแทน</div>
+                        </div>
+                    </div>
+
+                    <!-- GPF Lump Sum Highlight Box -->
+                    <div class="bg-gradient-to-br from-emerald-800 via-teal-800 to-navy-900 text-white rounded-2xl p-5 shadow-lg border border-emerald-500/30">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3 mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-gold-400/20 text-gold-300 border border-gold-400/40 flex items-center justify-center text-xl shrink-0 shadow-inner">
+                                    <i class="fa-solid fa-sack-dollar"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gold-300 font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                                        <span>ประมาณการเงินก้อน กบข. เมื่อเกษียณ (อายุ 60 ปี)</span>
+                                    </div>
+                                    <div id="sim-gpf-total" class="text-2xl sm:text-3xl font-extrabold text-white mt-0.5">2,854,200 ฿</div>
+                                </div>
+                            </div>
+                            <div class="text-left sm:text-right bg-white/10 px-3.5 py-2 rounded-xl border border-white/10">
+                                <div class="text-[11px] text-slate-300">ความมั่นคงหลังเกษียณ</div>
+                                <div id="sim-gpf-pension-combo" class="text-xs sm:text-sm font-bold text-emerald-300">บำนาญ 45,800 บ./ด. + เงินก้อน กบข.</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+                                <div class="text-slate-300 text-[11px]">1. เงินสะสมของเรา (<span id="gpf-disp-member-pct">3%</span>)</div>
+                                <div id="sim-gpf-member-part" class="text-base font-bold text-white mt-1">920,400 ฿</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">หักจากเงินเดือนทุกเดือน</div>
+                            </div>
+                            <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+                                <div class="text-slate-300 text-[11px]">2. รัฐสมทบ + ชดเชย (5%)</div>
+                                <div id="sim-gpf-gov-part" class="text-base font-bold text-gold-300 mt-1">1,245,600 ฿</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">เงินที่รัฐบาลให้เพิ่มฟรี</div>
+                            </div>
+                            <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+                                <div class="text-slate-300 text-[11px]">3. ผลประโยชน์การลงทุน + เงินยกมา</div>
+                                <div id="sim-gpf-yield-part" class="text-base font-bold text-emerald-400 mt-1">688,200 ฿</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">ผลตอบแทนสะสมทบต้น</div>
+                            </div>
                         </div>
                     </div>
 
@@ -514,6 +604,411 @@
                                     <!-- Populated by JS -->
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 4: เครื่องมือนับเวลาทำวิทยฐานะ วPA (ก.ค.ศ. ว9/2564 & ว16/2564)
+             ========================================== -->
+        <section id="tab-pa" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Column: Inputs -->
+                <div class="lg:col-span-5 bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit">
+                    <div class="border-b border-slate-100 pb-3 mb-5">
+                        <span class="text-xs font-bold text-navy-700 bg-navy-50 px-2.5 py-1 rounded-md border border-navy-100">
+                            ก.ค.ศ. ว9/2564 & ว16/2564
+                        </span>
+                        <h2 class="text-lg font-bold text-navy-900 mt-2 flex items-center gap-2">
+                            <i class="fa-solid fa-hourglass-half text-gold-500"></i> ตรวจสอบระยะเวลา & คุณสมบัติ วPA
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">คำนวณวันครบเกณฑ์ครองตำแหน่ง และรอบประเมิน PA ที่ต้องใช้ยื่นระบบ DPA</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- เลือกวิทยฐานะปัจจุบัน -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">1. อันดับ / วิทยฐานะปัจจุบัน</label>
+                            <select id="pa-current-rank" onchange="calculatePA()"
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-navy-800 bg-white focus:border-navy-600 outline-none">
+                                <option value="ครูผู้ช่วย">ครูผู้ช่วย (เตรียมประเมินบรรจุ คศ.1)</option>
+                                <option value="คศ.1" selected>คศ.1 (เตรียมยื่นขอมี ชำนาญการ - คศ.2)</option>
+                                <option value="คศ.2">คศ.2 ชำนาญการ (เตรียมยื่นขอเลื่อน ชำนาญการพิเศษ - คศ.3)</option>
+                                <option value="คศ.3">คศ.3 ชำนาญการพิเศษ (เตรียมยื่นขอเลื่อน เชี่ยวชาญ - คศ.4)</option>
+                                <option value="คศ.4">คศ.4 เชี่ยวชาญ (เตรียมยื่นขอเลื่อน เชี่ยวชาญพิเศษ - คศ.5)</option>
+                            </select>
+                        </div>
+
+                        <!-- วิทยฐานะเป้าหมาย -->
+                        <div class="bg-navy-50/60 p-3 rounded-xl border border-navy-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-[11px] text-slate-500 block">วิทยฐานะเป้าหมายที่จะยื่นขอ:</span>
+                                <span id="pa-target-rank-text" class="text-sm font-bold text-navy-800">คศ.2 (ชำนาญการ)</span>
+                            </div>
+                            <span id="pa-req-years-badge" class="px-2.5 py-1 rounded-lg bg-navy-600 text-white font-bold text-xs">เกณฑ์ 4 ปี</span>
+                        </div>
+
+                        <!-- วันที่ได้รับการแต่งตั้ง -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">2. วันที่ได้รับแต่งตั้งในอันดับปัจจุบัน (ตามคำสั่ง)</label>
+                            <input type="date" id="pa-start-date" onchange="calculatePA()"
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-navy-900 bg-white focus:border-navy-600 outline-none">
+                            <span class="text-[11px] text-slate-400 mt-1 block">* ดูวันที่ในคำสั่งแต่งตั้งให้ดำรงตำแหน่งหรือวิทยฐานะปัจจุบัน</span>
+                        </div>
+
+                        <!-- สิทธิการลดระยะเวลาตาม ว16/2564 -->
+                        <div id="pa-reduction-box" class="pt-2 border-t border-slate-100">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">3. สิทธิการลดระยะเวลาครองตำแหน่ง (ว16/2564)</label>
+                            <div class="space-y-2">
+                                <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                                    <input type="radio" name="pa-reduction" value="0" checked onchange="calculatePA()" class="mt-0.5 text-navy-600">
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-800">เกณฑ์ปกติ (4 ปี)</div>
+                                        <div class="text-[11px] text-slate-500">ไม่มีสิทธิลดระยะเวลา (ต้องใช้ผลประเมิน PA 3 รอบ)</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/40 hover:bg-emerald-50/70 cursor-pointer">
+                                    <input type="radio" name="pa-reduction" value="1" onchange="calculatePA()" class="mt-0.5 text-emerald-600">
+                                    <div>
+                                        <div class="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                                            <span>ได้รับสิทธิลดระยะเวลาเหลือ 3 ปี</span>
+                                            <span class="text-[10px] bg-emerald-600 text-white px-1.5 py-0.2 rounded">ว16</span>
+                                        </div>
+                                        <div class="text-[11px] text-slate-600 mt-0.5">เช่น จบ ป.โท/เอก ที่ ก.ค.ศ. รับรอง, สอบผ่าน CEFR ตามเกณฑ์, หรือสอนในพื้นที่พิเศษ (ใช้ผล PA 2 รอบ)</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- หมายเหตุสำหรับครูผู้ช่วย -->
+                        <div id="pa-assistant-note" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                            <i class="fa-solid fa-circle-info text-amber-600 mr-1"></i> ครูผู้ช่วยมีระยะเวลาเตรียมความพร้อมและพัฒนาอย่างเข้ม <b>2 ปี</b> (ประเมินทุก 6 เดือน รวม 4 ครั้ง) เมื่อผ่านเกณฑ์จะได้รับการแต่งตั้งเป็น คศ.1 โดยไม่มีสิทธิลดระยะเวลา
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Qualification Results -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    
+                    <!-- Main Status Card -->
+                    <div id="pa-status-card" class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 relative overflow-hidden transition-all">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100">
+                            <div>
+                                <span id="pa-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                                    <i class="fa-solid fa-clock"></i> อยู่ระหว่างสะสมระยะเวลา
+                                </span>
+                                <h3 id="pa-status-title" class="text-xl font-bold text-navy-900 mt-2">ยังไม่ครบเกณฑ์ยื่นคำขอ</h3>
+                            </div>
+                            <button type="button" onclick="copyPASummary()" class="no-print px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-300 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 self-start sm:self-auto">
+                                <i class="fa-brands fa-line text-sm text-emerald-600"></i>
+                                <span>คัดลอกสรุป วPA ส่ง LINE</span>
+                            </button>
+                        </div>
+
+                        <!-- 3 Big Metric Boxes -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                                <div class="text-xs text-slate-500 mb-1">ระยะเวลาครองตำแหน่งแล้ว</div>
+                                <div id="pa-elapsed-text" class="text-lg font-bold text-navy-800">2 ปี 3 เดือน 15 วัน</div>
+                                <div id="pa-elapsed-sub" class="text-[11px] text-slate-400 mt-1">นับถึงปัจจุบัน</div>
+                            </div>
+                            <div class="bg-emerald-50/60 p-4 rounded-xl border border-emerald-200">
+                                <div class="text-xs text-emerald-700 font-medium mb-1">เกณฑ์เวลาที่กำหนด</div>
+                                <div id="pa-target-years-text" class="text-2xl font-extrabold text-emerald-700">4 ปี</div>
+                                <div id="pa-target-years-desc" class="text-[11px] text-emerald-600/80 mt-1">เกณฑ์ปกติ ก.ค.ศ.</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-navy-800 to-navy-900 text-white p-4 rounded-xl shadow-md">
+                                <div class="text-xs text-gold-400 font-medium mb-1">วันที่เริ่มมีสิทธิยื่นได้</div>
+                                <div id="pa-eligible-date-text" class="text-lg sm:text-xl font-extrabold tracking-tight">1 พ.ค. 2569</div>
+                                <div id="pa-remaining-days-text" class="text-[11px] text-slate-300 mt-1">เหลืออีก 1 ปี 8 เดือน</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar of Tenure -->
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+                            <div class="flex justify-between items-center text-xs font-semibold mb-2">
+                                <span class="text-slate-600">ความก้าวหน้าการครองตำแหน่ง</span>
+                                <span id="pa-progress-pct" class="text-navy-700 font-bold">57%</span>
+                            </div>
+                            <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden flex">
+                                <div id="pa-progress-bar" class="bg-gradient-to-r from-navy-600 to-emerald-500 h-full transition-all duration-500" style="width: 57%"></div>
+                            </div>
+                            <div class="flex justify-between text-[11px] text-slate-400 mt-1.5">
+                                <span>วันแต่งตั้ง</span>
+                                <span id="pa-mid-milestone" class="text-slate-500">สะสมผลงาน PA</span>
+                                <span>วันครบกำหนดสิทธิ์</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PA Evaluation Cycles Required -->
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-gold-500"></i> รอบการประเมิน PA ที่ต้องใช้แนบในระบบ DPA
+                        </h4>
+                        <div id="pa-cycles-container" class="space-y-2.5">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- DPA Submission Requirements Guide -->
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open text-navy-600"></i> สิ่งที่ต้องเตรียมยื่นในระบบ DPA (ว9/2564)
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-600">
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <b class="text-navy-900 block mb-1"><i class="fa-solid fa-video text-rose-500 mr-1"></i> ด้านที่ 1: การจัดการเรียนรู้</b>
+                                <p>• คลิปวิดีโอการจัดการเรียนรู้ (ไม่เกิน 60 นาที)</p>
+                                <p>• คลิปบันทึกสภาพปัญหา/ที่มา/แรงบันดาลใจ (ไม่เกิน 10 นาที)</p>
+                                <p>• แผนการจัดการเรียนรู้ 1 แผน</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <b class="text-navy-900 block mb-1"><i class="fa-solid fa-award text-amber-500 mr-1"></i> ด้านที่ 2: ผลลัพธ์ของผู้เรียน</b>
+                                <p>• ไฟล์ผลงานหรือคลิปผลลัพธ์การเรียนรู้ของผู้เรียน (ไม่เกิน 3 ไฟล์/คลิป)</p>
+                                <p>• สอดคล้องกับแผนการสอนและคลิปการสอนในด้านที่ 1</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 5: วางแผนภาษีเงินได้สำหรับข้าราชการครู
+             ========================================== -->
+        <section id="tab-tax" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Column: Inputs -->
+                <div class="lg:col-span-6 bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-5 border-b border-slate-100 gap-2">
+                        <div>
+                            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                                ภาษีเงินได้บุคคลธรรมดา (ภ.ง.ด.91)
+                            </span>
+                            <h2 class="text-lg font-bold text-navy-900 mt-2 flex items-center gap-2">
+                                <i class="fa-solid fa-receipt text-gold-500"></i> ข้อมูลรายได้ & ค่าลดหย่อนภาษีครู
+                            </h2>
+                        </div>
+                        <button type="button" onclick="syncTaxFromSalary()" class="px-3 py-1.5 rounded-xl bg-navy-50 hover:bg-navy-100 text-navy-700 text-xs font-bold border border-navy-200 transition-colors flex items-center gap-1.5 self-start sm:self-auto">
+                            <i class="fa-solid fa-arrows-rotate"></i> ดึงจากเงินเดือนปัจจุบัน
+                        </button>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- ส่วนที่ 1: รายได้ทั้งปี -->
+                        <div>
+                            <h3 class="text-xs font-bold text-navy-800 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                                <i class="fa-solid fa-wallet text-emerald-600"></i> 1. ประมาณการรายได้ทั้งปี (เงินได้ ม.40(1))
+                            </h3>
+                            <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                        <span>เงินเดือนเฉลี่ย/เดือน (บาท)</span>
+                                        <span id="tax-salary-year-hint" class="text-navy-600 font-semibold">= 282,000 บ./ปี</span>
+                                    </div>
+                                    <input type="number" id="tax-monthly-salary" value="23500" step="100" oninput="calculateTax()"
+                                        class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-navy-800 text-sm focus:border-navy-600 outline-none">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                        <span>เงินวิทยฐานะ + ค่าตอบแทนพิเศษ/เดือน (บาท)</span>
+                                        <span id="tax-allowance-year-hint" class="text-navy-600 font-semibold">= 0 บ./ปี</span>
+                                    </div>
+                                    <input type="number" id="tax-monthly-allowance" value="0" step="100" oninput="calculateTax()"
+                                        class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-navy-800 text-sm focus:border-navy-600 outline-none">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                        <span>รายได้อื่นทั้งปี (เช่น ค่าสอนพิเศษ/เบี้ยประชุม/ตกเบิก)</span>
+                                    </div>
+                                    <input type="number" id="tax-other-income" value="0" step="1000" oninput="calculateTax()"
+                                        class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-700 text-sm focus:border-navy-600 outline-none">
+                                </div>
+                                <div class="pt-2 border-t border-slate-200/70 flex justify-between items-center text-xs font-bold text-navy-900">
+                                    <span>เงินได้พึงประเมินรวมทั้งปี:</span>
+                                    <span id="tax-gross-income-display" class="text-base text-emerald-700">282,000 ฿</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ส่วนที่ 2: ค่าลดหย่อนครอบครัว -->
+                        <div>
+                            <h3 class="text-xs font-bold text-navy-800 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                                <i class="fa-solid fa-users text-indigo-600"></i> 2. ค่าลดหย่อนส่วนตัว & ครอบครัว
+                            </h3>
+                            <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <div class="text-xs text-slate-600 flex items-center justify-between">
+                                    <span>• ค่าลดหย่อนส่วนตัว (ตามกฎหมายกำหนด)</span>
+                                    <span class="font-bold text-navy-800">60,000 บาท</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs text-slate-700 pt-2 border-t border-slate-200/60">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="tax-spouse" onchange="calculateTax()" class="rounded border-slate-300 text-navy-600">
+                                        <span>คู่สมรสไม่มีเงินได้ (ลดหย่อน 60,000 บ.)</span>
+                                    </label>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                    <div>
+                                        <label class="block text-xs text-slate-600 mb-1">จำนวนบุตร (คนละ 30,000 บ.)</label>
+                                        <input type="number" id="tax-children" value="0" min="0" max="10" oninput="calculateTax()"
+                                            class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold text-navy-800 text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-600 mb-1">บิดา-มารดา อายุ 60+ (คนละ 30,000 บ.)</label>
+                                        <input type="number" id="tax-parents" value="0" min="0" max="4" oninput="calculateTax()"
+                                            class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold text-navy-800 text-xs">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ส่วนที่ 3: กบข. ประกัน และการออม -->
+                        <div>
+                            <h3 class="text-xs font-bold text-navy-800 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-halved text-gold-500"></i> 3. กบข. ประกัน และเงินออมเพื่อการเกษียณ
+                            </h3>
+                            <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                        <span>เงินสะสม กบข. ทั้งปี (% เงินเดือน)</span>
+                                        <span id="tax-gpf-deduct-hint" class="text-emerald-700 font-bold">= 8,460 บ./ปี</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <select id="tax-gpf-pct" onchange="calculateTax()" class="px-2.5 py-1.5 rounded-lg border border-slate-300 font-bold text-xs bg-white text-navy-800">
+                                            <option value="3" selected>3% (มาตรฐาน)</option>
+                                            <option value="5">5%</option>
+                                            <option value="8">8%</option>
+                                            <option value="10">10%</option>
+                                            <option value="15">15%</option>
+                                        </select>
+                                        <input type="number" id="tax-gpf-custom" placeholder="หรือระบุจำนวนเงินจริง" oninput="calculateTax()"
+                                            class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-medium">
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 mt-1">* กบข. ลดหย่อนได้ตามที่จ่ายจริง สูงสุดไม่เกิน 500,000 บาท</p>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                    <div>
+                                        <label class="block text-xs text-slate-600 mb-1">เบี้ยประกันชีวิต/สุขภาพ (สูงสุด 100,000 บ.)</label>
+                                        <input type="number" id="tax-insurance" value="0" step="1000" min="0" max="100000" oninput="calculateTax()"
+                                            class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-600 mb-1">ดอกเบี้ยกู้ซื้อบ้าน/ที่อยู่อาศัย (สูงสุด 100,000 บ.)</label>
+                                        <input type="number" id="tax-home-interest" value="0" step="1000" min="0" max="100000" oninput="calculateTax()"
+                                            class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold text-xs">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                    <div>
+                                        <label class="block text-xs text-slate-600 mb-1">กองทุน Thai ESG / RMF / SSF (บาท)</label>
+                                        <input type="number" id="tax-funds" value="0" step="5000" min="0" oninput="calculateTax()"
+                                            class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-600 mb-1">บริจาคการศึกษา e-Donation (ลดหย่อน 2 เท่า)</label>
+                                        <input type="number" id="tax-donation" value="0" step="1000" min="0" oninput="calculateTax()"
+                                            class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold text-xs">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Results & Tax Breakdown -->
+                <div class="lg:col-span-6 flex flex-col gap-6">
+                    
+                    <!-- Main Tax Highlight Card -->
+                    <div class="bg-gradient-to-br from-navy-800 via-navy-700 to-navy-900 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4 mb-5">
+                            <div>
+                                <span id="tax-bracket-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                                    <i class="fa-solid fa-check-circle"></i> ได้รับยกเว้นภาษี (0%)
+                                </span>
+                                <h3 class="text-xl font-bold mt-2">สรุปภาษีเงินได้ที่ต้องชำระ</h3>
+                            </div>
+                            <button type="button" onclick="copyTaxSummary()" class="no-print px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-1.5 active:scale-95 self-start sm:self-auto">
+                                <i class="fa-brands fa-line text-sm text-emerald-400"></i>
+                                <span>คัดลอกสรุปภาษีส่ง LINE</span>
+                            </button>
+                        </div>
+
+                        <!-- 3 Metric Numbers -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+                            <div class="bg-white/10 rounded-xl p-3.5 border border-white/10">
+                                <div class="text-[11px] text-slate-300">ภาษีสุทธิที่ต้องจ่ายทั้งปี</div>
+                                <div id="tax-total-payable" class="text-2xl font-extrabold text-gold-400 mt-1">0 ฿</div>
+                                <div class="text-[10px] text-slate-300 mt-0.5">ชำระตอนยื่น ภ.ง.ด.91</div>
+                            </div>
+                            <div class="bg-white/10 rounded-xl p-3.5 border border-white/10">
+                                <div class="text-[11px] text-slate-300">เฉลี่ยหัก ณ ที่จ่าย/เดือน</div>
+                                <div id="tax-monthly-withhold" class="text-xl font-bold text-white mt-1">0 ฿</div>
+                                <div class="text-[10px] text-slate-300 mt-0.5">หักจากสลิปเงินเดือน</div>
+                            </div>
+                            <div class="bg-white/10 rounded-xl p-3.5 border border-white/10">
+                                <div class="text-[11px] text-slate-300">เงินได้สุทธิที่คิดภาษี</div>
+                                <div id="tax-net-income" class="text-xl font-bold text-emerald-300 mt-1">113,540 ฿</div>
+                                <div id="tax-marginal-rate" class="text-[10px] text-emerald-200 mt-0.5">ฐานภาษีสูงสุด 0%</div>
+                            </div>
+                        </div>
+
+                        <!-- Step Summary Bars -->
+                        <div class="space-y-2 text-xs bg-black/20 p-3.5 rounded-xl border border-white/10 mt-4">
+                            <div class="flex justify-between text-slate-300">
+                                <span>1. เงินได้พึงประเมินทั้งปี:</span>
+                                <span id="tax-flow-gross" class="font-bold text-white">282,000 ฿</span>
+                            </div>
+                            <div class="flex justify-between text-rose-300">
+                                <span>2. หัก ค่าใช้จ่าย (50% ไม่เกิน 1 แสน):</span>
+                                <span id="tax-flow-expense" class="font-bold">-100,000 ฿</span>
+                            </div>
+                            <div class="flex justify-between text-amber-300">
+                                <span>3. หัก ค่าลดหย่อนรวมทั้งหมด:</span>
+                                <span id="tax-flow-deductions" class="font-bold">-68,460 ฿</span>
+                            </div>
+                            <div class="pt-2 border-t border-white/10 flex justify-between font-bold text-white text-sm">
+                                <span>คงเหลือเงินได้สุทธิ:</span>
+                                <span id="tax-flow-net" class="text-emerald-400">113,540 ฿</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progressive Tax Brackets Table -->
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-stairs text-gold-500"></i> ตารางแจกแจงภาษีตามอัตราขั้นบันได (กรมสรรพากร)
+                        </h4>
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-xs text-left">
+                                <thead class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                                    <tr>
+                                        <th class="py-2.5 px-3">ช่วงเงินได้สุทธิ (บาท)</th>
+                                        <th class="py-2.5 px-3">อัตราภาษี</th>
+                                        <th class="py-2.5 px-3 text-right">เงินได้ในขั้นนี้</th>
+                                        <th class="py-2.5 px-3 text-right">ภาษีในขั้นนี้ (บาท)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tax-bracket-tbody" class="divide-y divide-slate-100 font-medium">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Smart Tax Saving Tips for Teachers -->
+                    <div class="bg-amber-50/80 rounded-2xl p-5 border border-amber-200 text-xs text-amber-900 space-y-2">
+                        <b class="text-sm font-bold text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-gold-500"></i> เคล็ดลับวางแผนประหยัดภาษีสำหรับคุณครู
+                        </b>
+                        <div id="tax-smart-advice" class="space-y-1.5 text-slate-700 leading-relaxed">
+                            <!-- Populated by JS -->
                         </div>
                     </div>
 
@@ -806,18 +1301,23 @@
         // สลับแท็บ
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
+            const targetEl = document.getElementById(tabId);
+            if (targetEl) targetEl.classList.remove('hidden');
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('tab-active');
                 btn.classList.add('bg-white/10', 'text-white');
             });
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.add('tab-active');
-            activeBtn.classList.remove('bg-white/10');
+            if (activeBtn) {
+                activeBtn.classList.add('tab-active');
+                activeBtn.classList.remove('bg-white/10');
+            }
 
             if (tabId === 'tab-future') {
                 runSimulation();
+            } else if (tabId === 'tab-pa') {
+                calculatePA();
             }
         }
 
@@ -1006,6 +1506,20 @@
             const planKS3 = parseInt(document.getElementById('plan-ks3').value) || 0;
             const planKS4 = parseInt(document.getElementById('plan-ks4').value) || 0;
 
+            // ตัวแปรสำหรับคำนวณ กบข.
+            const gpfFundInput = document.getElementById('gpf-current-fund');
+            const gpfInitial = gpfFundInput ? Math.max(0, parseFloat(gpfFundInput.value) || 0) : 150000;
+            const gpfMemberPctEl = document.getElementById('gpf-member-pct');
+            const gpfMemberPct = gpfMemberPctEl ? parseFloat(gpfMemberPctEl.value) || 3 : 3;
+            const gpfReturnPctEl = document.getElementById('gpf-return-pct');
+            const gpfReturnPct = gpfReturnPctEl ? parseFloat(gpfReturnPctEl.value) || 3.5 : 3.5;
+            const gpfGovPct = 5.0; // 3% รัฐสมทบ + 2% รัฐชดเชย
+
+            let gpfBalance = gpfInitial;
+            let totalMemberSaved = 0;
+            let totalGovContributed = 0;
+            const monthlyReturnRate = Math.pow(1 + (gpfReturnPct / 100), 1 / 12) - 1;
+
             lastSimulationRows = [];
             let firstMaxAge = null;
 
@@ -1064,6 +1578,17 @@
 
                     const actualAdded = nextSalary - currentSalary;
 
+                    // คำนวณสะสมเงิน กบข. รายเดือนตลอด 6 เดือนในรอบนี้
+                    const memberMonthAdd = nextSalary * (gpfMemberPct / 100);
+                    const govMonthAdd = nextSalary * (gpfGovPct / 100);
+                    const totalMonthAdd = memberMonthAdd + govMonthAdd;
+
+                    for (let m = 0; m < 6; m++) {
+                        gpfBalance = (gpfBalance + totalMonthAdd) * (1 + monthlyReturnRate);
+                        totalMemberSaved += memberMonthAdd;
+                        totalGovContributed += govMonthAdd;
+                    }
+
                     lastSimulationRows.push({
                         age,
                         round: r.name,
@@ -1107,6 +1632,30 @@
 
             document.getElementById('sim-pension').textContent = `${estimatedPension.toLocaleString()} ฿`;
             document.getElementById('sim-pension-desc').textContent = `อายุราชการรวม ${totalServiceYears} ปี (${pensionPct.toFixed(0)}%)`;
+
+            // อัปเดตกล่องเงินก้อน กบข.
+            const totalGpfLumpSum = Math.round(gpfBalance);
+            const totalMemberPart = Math.round(totalMemberSaved);
+            const totalGovPart = Math.round(totalGovContributed);
+            const totalYieldAndInitial = Math.max(0, totalGpfLumpSum - totalMemberPart - totalGovPart);
+
+            const dispMemberPct = document.getElementById('gpf-disp-member-pct');
+            if (dispMemberPct) dispMemberPct.textContent = `${gpfMemberPct}%`;
+
+            const simGpfTotalEl = document.getElementById('sim-gpf-total');
+            if (simGpfTotalEl) simGpfTotalEl.textContent = `${totalGpfLumpSum.toLocaleString()} ฿`;
+
+            const simGpfMemberEl = document.getElementById('sim-gpf-member-part');
+            if (simGpfMemberEl) simGpfMemberEl.textContent = `${totalMemberPart.toLocaleString()} ฿`;
+
+            const simGpfGovEl = document.getElementById('sim-gpf-gov-part');
+            if (simGpfGovEl) simGpfGovEl.textContent = `${totalGovPart.toLocaleString()} ฿`;
+
+            const simGpfYieldEl = document.getElementById('sim-gpf-yield-part');
+            if (simGpfYieldEl) simGpfYieldEl.textContent = `${totalYieldAndInitial.toLocaleString()} ฿`;
+
+            const comboEl = document.getElementById('sim-gpf-pension-combo');
+            if (comboEl) comboEl.textContent = `บำนาญ ${estimatedPension.toLocaleString()} บ./ด. + เงินก้อน กบข.`;
 
             if (firstMaxAge) {
                 document.getElementById('sim-max-age').textContent = `อายุ ${firstMaxAge} ปี`;
@@ -1309,6 +1858,7 @@
             const pension = document.getElementById('sim-pension').textContent;
             const pensionDesc = document.getElementById('sim-pension-desc').textContent;
             const maxAge = document.getElementById('sim-max-age').textContent;
+            const gpfTotal = document.getElementById('sim-gpf-total')?.textContent || '2,854,200 ฿';
 
             const text = [
                 `📈 แผนจำลองความก้าวหน้าเงินเดือน & บำนาญครู (ถึงอายุ 60 ปี)`,
@@ -1316,6 +1866,7 @@
                 `💰 เงินเดือนสุดท้าย ณ เกษียณ: ${finalSalary}`,
                 `💵 รายรับรวมต่อเดือน (รวมวิทยฐานะ): ${finalTotal}`,
                 `🏦 ประมาณการบำนาญ กบข.: ${pension}`,
+                `💼 ประมาณการเงินก้อน กบข. สุทธิ: ${gpfTotal}`,
                 `⏳ ข้อมูล: ${pensionDesc}`,
                 `📊 สถิติเต็มขั้น: ${maxAge}`,
                 `--------------------------`,
@@ -1335,10 +1886,404 @@
             });
         }
 
+        // ==========================================
+        // ระบบนับเวลาทำวิทยฐานะ วPA (ว9/2564 & ว16/2564)
+        // ==========================================
+        const PA_TARGET_MAP = {
+            'ครูผู้ช่วย': { target: 'คศ.1', normalYears: 2, canReduce: false },
+            'คศ.1': { target: 'คศ.2 (ชำนาญการ)', normalYears: 4, canReduce: true },
+            'คศ.2': { target: 'คศ.3 (ชำนาญการพิเศษ)', normalYears: 4, canReduce: true },
+            'คศ.3': { target: 'คศ.4 (เชี่ยวชาญ)', normalYears: 4, canReduce: true },
+            'คศ.4': { target: 'คศ.5 (เชี่ยวชาญพิเศษ)', normalYears: 4, canReduce: false }
+        };
+
+        function calculatePA() {
+            const rankEl = document.getElementById('pa-current-rank');
+            if (!rankEl) return;
+            const currentRank = rankEl.value;
+            const rankRule = PA_TARGET_MAP[currentRank] || PA_TARGET_MAP['คศ.1'];
+
+            const reductionBox = document.getElementById('pa-reduction-box');
+            const assistantNote = document.getElementById('pa-assistant-note');
+            if (!rankRule.canReduce) {
+                if (reductionBox) reductionBox.classList.add('hidden');
+                if (assistantNote) {
+                    if (currentRank === 'ครูผู้ช่วย') assistantNote.classList.remove('hidden');
+                    else assistantNote.classList.add('hidden');
+                }
+            } else {
+                if (reductionBox) reductionBox.classList.remove('hidden');
+                if (assistantNote) assistantNote.classList.add('hidden');
+            }
+
+            const isReduced = rankRule.canReduce && (document.querySelector('input[name="pa-reduction"]:checked')?.value === '1');
+            const requiredYears = isReduced ? 3 : rankRule.normalYears;
+
+            document.getElementById('pa-target-rank-text').textContent = rankRule.target;
+            document.getElementById('pa-req-years-badge').textContent = `เกณฑ์ ${requiredYears} ปี${isReduced ? ' (ลดเวลา)' : ''}`;
+            document.getElementById('pa-target-years-text').textContent = `${requiredYears} ปี`;
+            document.getElementById('pa-target-years-desc').textContent = isReduced ? 'สิทธิลดระยะเวลา (ว16/2564)' : (currentRank === 'ครูผู้ช่วย' ? 'เตรียมความพร้อม 2 ปี' : 'เกณฑ์ปกติ ก.ค.ศ.');
+
+            // วันที่แต่งตั้ง
+            const startDateVal = document.getElementById('pa-start-date').value;
+            let startDate = startDateVal ? new Date(startDateVal) : new Date(new Date().setFullYear(new Date().getFullYear() - 2));
+            if (!startDateVal) {
+                const yyyy = startDate.getFullYear();
+                const mm = String(startDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(startDate.getDate()).padStart(2, '0');
+                document.getElementById('pa-start-date').value = `${yyyy}-${mm}-${dd}`;
+            }
+
+            const today = new Date();
+            const eligibleDate = new Date(startDate);
+            eligibleDate.setFullYear(eligibleDate.getFullYear() + requiredYears);
+
+            // คำนวณระยะเวลาครองตำแหน่งแล้ว
+            const diff = getDateDiff(startDate, today);
+            document.getElementById('pa-elapsed-text').textContent = `${diff.years} ปี ${diff.months} เดือน ${diff.days} วัน`;
+
+            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const eD = eligibleDate.getDate();
+            const eM = thaiMonths[eligibleDate.getMonth()];
+            const eY = eligibleDate.getFullYear() + 543;
+            document.getElementById('pa-eligible-date-text').textContent = `${eD} ${eM} ${eY}`;
+
+            const isEligible = today >= eligibleDate;
+            const statusCard = document.getElementById('pa-status-card');
+            const statusBadge = document.getElementById('pa-status-badge');
+            const statusTitle = document.getElementById('pa-status-title');
+            const remainingText = document.getElementById('pa-remaining-days-text');
+            const progressBar = document.getElementById('pa-progress-bar');
+            const progressPct = document.getElementById('pa-progress-pct');
+
+            const totalSpan = eligibleDate.getTime() - startDate.getTime();
+            const elapsedSpan = Math.max(0, today.getTime() - startDate.getTime());
+            let pct = Math.min(100, Math.round((elapsedSpan / Math.max(1, totalSpan)) * 100));
+
+            if (isEligible) {
+                statusCard.className = 'bg-emerald-50/40 rounded-2xl p-6 card-shadow border-2 border-emerald-400 relative overflow-hidden transition-all';
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800';
+                statusBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> มีคุณสมบัติครบเกณฑ์แล้ว!';
+                statusTitle.textContent = `สามารถยื่นคำขอ วPA (${rankRule.target}) ได้แล้ว`;
+                remainingText.textContent = 'ครบกำหนดคุณสมบัติเวลาแล้ว';
+                progressBar.style.width = '100%';
+                progressPct.textContent = '100% (ครบเกณฑ์)';
+            } else {
+                const remDiff = getDateDiff(today, eligibleDate);
+                statusCard.className = 'bg-white rounded-2xl p-6 card-shadow border border-slate-100 relative overflow-hidden transition-all';
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800';
+                statusBadge.innerHTML = '<i class="fa-solid fa-clock"></i> อยู่ระหว่างสะสมระยะเวลา';
+                statusTitle.textContent = 'ยังไม่ครบเกณฑ์ยื่นคำขอ';
+                remainingText.textContent = `เหลืออีก ${remDiff.years} ปี ${remDiff.months} เดือน ${remDiff.days} วัน`;
+                progressBar.style.width = `${pct}%`;
+                progressPct.textContent = `${pct}%`;
+            }
+
+            // แสดงรายการรอบการประเมิน PA
+            const cyclesContainer = document.getElementById('pa-cycles-container');
+            if (cyclesContainer) {
+                cyclesContainer.innerHTML = '';
+                const currentFiscalYear = (today.getMonth() >= 9) ? today.getFullYear() + 544 : today.getFullYear() + 543;
+
+                if (currentRank === 'ครูผู้ช่วย') {
+                    for (let i = 1; i <= 4; i++) {
+                        const item = document.createElement('div');
+                        item.className = 'flex items-center justify-between p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs';
+                        item.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-navy-600 text-white font-bold flex items-center justify-center text-[11px]">${i}</span>
+                                <span class="font-bold text-slate-800">การประเมินเตรียมความพร้อมและพัฒนาอย่างเข้ม ครั้งที่ ${i} (รอบ 6 เดือน)</span>
+                            </div>
+                            <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">ตามรอบ 6 ด.</span>
+                        `;
+                        cyclesContainer.appendChild(item);
+                    }
+                } else {
+                    const requiredCycles = isReduced ? 2 : 3;
+                    for (let i = requiredCycles; i >= 1; i--) {
+                        const fYear = currentFiscalYear - i;
+                        const item = document.createElement('div');
+                        item.className = 'flex items-center justify-between p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs';
+                        item.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-navy-600 text-white font-bold flex items-center justify-center text-[11px]">${requiredCycles - i + 1}</span>
+                                <span class="font-bold text-slate-800">ผลการประเมิน PA รอบปีงบประมาณ พ.ศ. ${fYear}</span>
+                            </div>
+                            <span class="text-navy-700 font-semibold bg-navy-50 px-2 py-0.5 rounded border border-navy-100">ต้องผ่านเกณฑ์</span>
+                        `;
+                        cyclesContainer.appendChild(item);
+                    }
+                }
+            }
+            saveFormData();
+        }
+
+        function getDateDiff(start, end) {
+            let y = end.getFullYear() - start.getFullYear();
+            let m = end.getMonth() - start.getMonth();
+            let d = end.getDate() - start.getDate();
+            if (d < 0) {
+                m--;
+                let prev = new Date(end.getFullYear(), end.getMonth(), 0);
+                d += prev.getDate();
+            }
+            if (m < 0) {
+                y--;
+                m += 12;
+            }
+            return { years: Math.max(0, y), months: Math.max(0, m), days: Math.max(0, d) };
+        }
+
+        function copyPASummary() {
+            const currentRank = document.getElementById('pa-current-rank').value;
+            const targetRank = document.getElementById('pa-target-rank-text').textContent;
+            const elapsed = document.getElementById('pa-elapsed-text').textContent;
+            const eligibleDate = document.getElementById('pa-eligible-date-text').textContent;
+            const status = document.getElementById('pa-status-title').textContent;
+            const remaining = document.getElementById('pa-remaining-days-text').textContent;
+
+            const text = [
+                `📋 สรุปคุณสมบัติและสิทธิการยื่น วPA (ระบบ DPA)`,
+                `🏷️ วิทยฐานะปัจจุบัน: ${currentRank}`,
+                `🎯 ยื่นขอเลื่อน/มี: ${targetRank}`,
+                `⏳ ครองตำแหน่งมาแล้ว: ${elapsed}`,
+                `📅 วันที่เริ่มมีสิทธิยื่น: ${eligibleDate}`,
+                `📊 สถานะ: ${status} (${remaining})`,
+                `--------------------------`,
+                `ตรวจสอบผ่านระบบวางแผนเงินเดือน & วPA ข้าราชการครู`
+            ].join('\n');
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('คัดลอกสรุป วPA ส่ง LINE เรียบร้อยแล้ว!');
+            }).catch(() => {
+                showToast('คัดลอกสรุป วPA ส่ง LINE เรียบร้อยแล้ว!');
+            });
+        }
+
+        // ==========================================
+        // ระบบวางแผนภาษีข้าราชการครู (ภ.ง.ด.91)
+        // ==========================================
+        function syncTaxFromSalary() {
+            const currentSalary = parseFloat(document.getElementById('single-salary').value) || 23500;
+            const details = getCalculationDetails(currentSingleRank, currentSalary, true);
+            document.getElementById('tax-monthly-salary').value = currentSalary;
+            document.getElementById('tax-monthly-allowance').value = details.allowance;
+            calculateTax();
+            showToast('ดึงข้อมูลเงินเดือนและวิทยฐานะปัจจุบันเรียบร้อยแล้ว');
+        }
+
+        function calculateTax() {
+            const mSalary = parseFloat(document.getElementById('tax-monthly-salary')?.value) || 0;
+            const mAllowance = parseFloat(document.getElementById('tax-monthly-allowance')?.value) || 0;
+            const otherIncome = parseFloat(document.getElementById('tax-other-income')?.value) || 0;
+
+            const annualSalary = mSalary * 12;
+            const annualAllowance = mAllowance * 12;
+            const grossIncome = annualSalary + annualAllowance + otherIncome;
+
+            const salaryHint = document.getElementById('tax-salary-year-hint');
+            if (salaryHint) salaryHint.textContent = `= ${annualSalary.toLocaleString()} บ./ปี`;
+            const allowHint = document.getElementById('tax-allowance-year-hint');
+            if (allowHint) allowHint.textContent = `= ${annualAllowance.toLocaleString()} บ./ปี`;
+            const grossDisp = document.getElementById('tax-gross-income-display');
+            if (grossDisp) grossDisp.textContent = `${grossIncome.toLocaleString()} ฿`;
+
+            // 1. หักค่าใช้จ่าย 50% ไม่เกิน 100,000 บาท
+            const expense = Math.min(100000, grossIncome * 0.5);
+
+            // 2. ค่าลดหย่อนครอบครัว
+            const personal = 60000;
+            const spouse = document.getElementById('tax-spouse')?.checked ? 60000 : 0;
+            const children = (parseInt(document.getElementById('tax-children')?.value) || 0) * 30000;
+            const parents = (parseInt(document.getElementById('tax-parents')?.value) || 0) * 30000;
+
+            // กบข. (สูงสุด 500,000 บ.)
+            const gpfPct = parseFloat(document.getElementById('tax-gpf-pct')?.value) || 3;
+            const gpfCustom = parseFloat(document.getElementById('tax-gpf-custom')?.value);
+            let gpfDeduct = isNaN(gpfCustom) || gpfCustom <= 0 ? (annualSalary * (gpfPct / 100)) : gpfCustom;
+            gpfDeduct = Math.min(500000, gpfDeduct);
+            const gpfHint = document.getElementById('tax-gpf-deduct-hint');
+            if (gpfHint) gpfHint.textContent = `= ${Math.round(gpfDeduct).toLocaleString()} บ./ปี`;
+
+            const insurance = Math.min(100000, parseFloat(document.getElementById('tax-insurance')?.value) || 0);
+            const homeInterest = Math.min(100000, parseFloat(document.getElementById('tax-home-interest')?.value) || 0);
+            const funds = parseFloat(document.getElementById('tax-funds')?.value) || 0;
+
+            const baseDeductions = personal + spouse + children + parents + gpfDeduct + insurance + homeInterest + funds;
+            const incomeBeforeDonation = Math.max(0, grossIncome - expense - baseDeductions);
+
+            // บริจาคการศึกษา e-Donation ลดหย่อนได้ 2 เท่า สูงสุด 10%
+            const rawDonation = parseFloat(document.getElementById('tax-donation')?.value) || 0;
+            const maxDonationDeduct = incomeBeforeDonation * 0.10;
+            const donationDeduct = Math.min(maxDonationDeduct, rawDonation * 2);
+
+            const totalDeductions = baseDeductions + donationDeduct;
+            const netIncome = Math.max(0, grossIncome - expense - totalDeductions);
+
+            // อัตราภาษีขั้นบันได
+            const brackets = [
+                { min: 0, max: 150000, rate: 0, name: '0 - 150,000 (ยกเว้น)' },
+                { min: 150000, max: 300000, rate: 0.05, name: '150,001 - 300,000 (5%)' },
+                { min: 300000, max: 500000, rate: 0.10, name: '300,001 - 500,000 (10%)' },
+                { min: 500000, max: 750000, rate: 0.15, name: '500,001 - 750,000 (15%)' },
+                { min: 750000, max: 1000000, rate: 0.20, name: '750,001 - 1,000,000 (20%)' },
+                { min: 1000000, max: 2000000, rate: 0.25, name: '1,000,001 - 2,000,000 (25%)' },
+                { min: 2000000, max: 5000000, rate: 0.30, name: '2,000,001 - 5,000,000 (30%)' },
+                { min: 5000000, max: Infinity, rate: 0.35, name: 'มากกว่า 5,000,000 (35%)' }
+            ];
+
+            let totalTax = 0;
+            let marginalRate = 0;
+            const bracketTbody = document.getElementById('tax-bracket-tbody');
+            if (bracketTbody) bracketTbody.innerHTML = '';
+
+            brackets.forEach(b => {
+                if (netIncome > b.min) {
+                    const taxableInThisBracket = Math.min(netIncome, b.max) - b.min;
+                    const taxInThisBracket = taxableInThisBracket * b.rate;
+                    totalTax += taxInThisBracket;
+                    if (b.rate > marginalRate) marginalRate = b.rate;
+
+                    if (bracketTbody) {
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-slate-50 font-semibold';
+                        tr.innerHTML = `
+                            <td class="py-2 px-3 text-slate-700">${b.name}</td>
+                            <td class="py-2 px-3 text-slate-500">${(b.rate * 100).toFixed(0)}%</td>
+                            <td class="py-2 px-3 text-right text-slate-800">${taxableInThisBracket.toLocaleString()} บ.</td>
+                            <td class="py-2 px-3 text-right ${taxInThisBracket > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">${taxInThisBracket.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} บ.</td>
+                        `;
+                        bracketTbody.appendChild(tr);
+                    }
+                }
+            });
+
+            // อัปเดตตัวเลข
+            document.getElementById('tax-total-payable').textContent = `${Math.round(totalTax).toLocaleString()} ฿`;
+            document.getElementById('tax-monthly-withhold').textContent = `${Math.round(totalTax / 12).toLocaleString()} ฿`;
+            document.getElementById('tax-net-income').textContent = `${Math.round(netIncome).toLocaleString()} ฿`;
+            document.getElementById('tax-marginal-rate').textContent = `ฐานภาษีสูงสุด ${(marginalRate * 100).toFixed(0)}%`;
+
+            const badge = document.getElementById('tax-bracket-badge');
+            if (badge) {
+                if (totalTax === 0) {
+                    badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
+                    badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> ได้รับยกเว้นภาษี (0%)';
+                } else {
+                    badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-gold-300 border border-gold-400/30';
+                    badge.innerHTML = `<i class="fa-solid fa-receipt"></i> เสียภาษีที่ฐาน ${(marginalRate * 100).toFixed(0)}%`;
+                }
+            }
+
+            document.getElementById('tax-flow-gross').textContent = `${grossIncome.toLocaleString()} ฿`;
+            document.getElementById('tax-flow-expense').textContent = `-${expense.toLocaleString()} ฿`;
+            document.getElementById('tax-flow-deductions').textContent = `-${Math.round(totalDeductions).toLocaleString()} ฿`;
+            document.getElementById('tax-flow-net').textContent = `${Math.round(netIncome).toLocaleString()} ฿`;
+
+            // เคล็ดลับวางแผนภาษี
+            const adviceEl = document.getElementById('tax-smart-advice');
+            if (adviceEl) {
+                const tips = [];
+                if (marginalRate > 0) {
+                    const addPctSave = annualSalary * 0.03 * marginalRate;
+                    tips.push(`• <b>เพิ่มเงินสะสม กบข. อีก 3%:</b> หากคุณครูยื่นขอสะสม กบข. เพิ่ม จะช่วยประหยัดภาษีได้อีกประมาณ <b>${Math.round(addPctSave).toLocaleString()} บาท/ปี</b> พร้อมได้รับเงินสมทบและดอกเบี้ยทบต้นวันเกษียณ`);
+                }
+                if (homeInterest === 0) {
+                    tips.push(`• <b>ดอกเบี้ยกู้บ้าน/สหกรณ์:</b> หากมีสินเชื่อที่อยู่อาศัย สามารถนำใบเสร็จดอกเบี้ยมาลดหย่อนได้สูงสุดถึง 100,000 บาท`);
+                }
+                if (donationDeduct === 0 && marginalRate > 0) {
+                    tips.push(`• <b>บริจาคการศึกษา e-Donation:</b> บริจาคให้โรงเรียนเพื่อพัฒนาการเรียนรู้ สามารถนำมาลดหย่อนได้ถึง <b>2 เท่า</b> ของยอดบริจาค`);
+                }
+                if (tips.length === 0) {
+                    tips.push(`• 🎉 <b>ยอดเยี่ยมมาก:</b> ขณะนี้คุณครูไม่ต้องเสียภาษีเงินได้บุคคลธรรมดา (ได้รับการยกเว้นภาษีเต็มจำนวน 100%)`);
+                }
+                adviceEl.innerHTML = tips.join('<br>');
+            }
+            saveFormData();
+        }
+
+        function copyTaxSummary() {
+            const gross = document.getElementById('tax-flow-gross').textContent;
+            const expense = document.getElementById('tax-flow-expense').textContent;
+            const deductions = document.getElementById('tax-flow-deductions').textContent;
+            const net = document.getElementById('tax-flow-net').textContent;
+            const taxTotal = document.getElementById('tax-total-payable').textContent;
+            const monthlyTax = document.getElementById('tax-monthly-withhold').textContent;
+            const rate = document.getElementById('tax-marginal-rate').textContent;
+
+            const text = [
+                `🧾 สรุปวางแผนภาษีเงินได้บุคคลธรรมดา (ภ.ง.ด.91) ข้าราชการครู`,
+                `💰 รายได้รวมทั้งปี: ${gross}`,
+                `✂️ หักค่าใช้จ่าย 50%: ${expense}`,
+                `🛡️ หักค่าลดหย่อนรวม (กบข./ครอบครัว/ประกัน): ${deductions}`,
+                `💵 เงินได้สุทธิที่คำนวณภาษี: ${net}`,
+                `📊 ${rate}`,
+                `💸 ภาษีที่ต้องชำระทั้งปี: ${taxTotal} (เฉลี่ยหัก ${monthlyTax}/เดือน)`,
+                `--------------------------`,
+                `วางแผนภาษีผ่านระบบคำนวณเงินเดือนข้าราชการครู`
+            ].join('\n');
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('คัดลอกสรุปภาษีส่ง LINE เรียบร้อยแล้ว!');
+            }).catch(() => {
+                showToast('คัดลอกสรุปภาษีส่ง LINE เรียบร้อยแล้ว!');
+            });
+        }
+
+        // ==========================================
+        // ระบบจำค่าอัตโนมัติ (LocalStorage Autosave)
+        // ==========================================
+        function saveFormData() {
+            try {
+                const data = {
+                    singleSalary: document.getElementById('single-salary')?.value,
+                    singleRank: currentSingleRank,
+                    singlePercent: document.getElementById('single-percent')?.value,
+                    simAge: document.getElementById('sim-age')?.value,
+                    simService: document.getElementById('sim-service')?.value,
+                    simRank: document.getElementById('sim-rank')?.value,
+                    simSalary: document.getElementById('sim-salary')?.value,
+                    gpfCurrentFund: document.getElementById('gpf-current-fund')?.value,
+                    gpfMemberPct: document.getElementById('gpf-member-pct')?.value,
+                    gpfReturnPct: document.getElementById('gpf-return-pct')?.value,
+                    paCurrentRank: document.getElementById('pa-current-rank')?.value,
+                    paStartDate: document.getElementById('pa-start-date')?.value,
+                    taxMonthlySalary: document.getElementById('tax-monthly-salary')?.value,
+                    taxMonthlyAllowance: document.getElementById('tax-monthly-allowance')?.value
+                };
+                localStorage.setItem('kru_salary_calc_data', JSON.stringify(data));
+            } catch (e) {}
+        }
+
+        function loadFormData() {
+            try {
+                const saved = localStorage.getItem('kru_salary_calc_data');
+                if (!saved) return;
+                const d = JSON.parse(saved);
+                if (d.singleSalary && document.getElementById('single-salary')) document.getElementById('single-salary').value = d.singleSalary;
+                if (d.singlePercent && document.getElementById('single-percent')) document.getElementById('single-percent').value = d.singlePercent;
+                if (d.singleRank) currentSingleRank = d.singleRank;
+                if (d.simAge && document.getElementById('sim-age')) document.getElementById('sim-age').value = d.simAge;
+                if (d.simService && document.getElementById('sim-service')) document.getElementById('sim-service').value = d.simService;
+                if (d.simRank && document.getElementById('sim-rank')) document.getElementById('sim-rank').value = d.simRank;
+                if (d.simSalary && document.getElementById('sim-salary')) document.getElementById('sim-salary').value = d.simSalary;
+                if (d.gpfCurrentFund && document.getElementById('gpf-current-fund')) document.getElementById('gpf-current-fund').value = d.gpfCurrentFund;
+                if (d.gpfMemberPct && document.getElementById('gpf-member-pct')) document.getElementById('gpf-member-pct').value = d.gpfMemberPct;
+                if (d.gpfReturnPct && document.getElementById('gpf-return-pct')) document.getElementById('gpf-return-pct').value = d.gpfReturnPct;
+                if (d.paCurrentRank && document.getElementById('pa-current-rank')) document.getElementById('pa-current-rank').value = d.paCurrentRank;
+                if (d.paStartDate && document.getElementById('pa-start-date')) document.getElementById('pa-start-date').value = d.paStartDate;
+                if (d.taxMonthlySalary && document.getElementById('tax-monthly-salary')) document.getElementById('tax-monthly-salary').value = d.taxMonthlySalary;
+                if (d.taxMonthlyAllowance && document.getElementById('tax-monthly-allowance')) document.getElementById('tax-monthly-allowance').value = d.taxMonthlyAllowance;
+            } catch (e) {}
+        }
+
         // เริ่มต้นการทำงานเมื่อโหลดหน้าเว็บ
         window.onload = function() {
-            selectSingleRank('คศ.1');
+            loadFormData();
+            selectSingleRank(currentSingleRank || 'คศ.1');
             runSimulation();
+            calculatePA();
+            calculateTax();
         };
     </script>
 
