@@ -1,0 +1,28 @@
+# Dependency & System files
+node_modules/
+.npm
+package-lock.json
+
+# Environment & Build
+.vercel
+dist/
+build/
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE & Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

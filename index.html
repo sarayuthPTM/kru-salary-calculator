@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบคำนวณเลื่อนเงินเดือนและวางแผนอนาคตข้าราชการครู (ก.ค.ศ.)</title>
+    
+    <!-- SEO & Open Graph for Social Sharing (LINE / Facebook) -->
+    <meta name="description" content="ระบบคำนวณเลื่อนเงินเดือนข้าราชการครู คำนวณฐานบน-ล่าง ปัดเศษหลักสิบ จำลองเงินเดือนถึงอายุ 60 ปี และคำนวณบำนาญ กบข. อ้างอิงเกณฑ์ ก.ค.ศ. ว20">
+    <meta name="keywords" content="เงินเดือนครู, เลื่อนเงินเดือน, กคศ, ว20, คำนวณบำนาญ, กบข, วิทยฐานะ, ฐานบนฐานล่าง">
+    <meta name="author" content="กลุ่มบริหารงานบุคคล โรงเรียนกาญจนาภิเษกวิทยาลัย กระบี่">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ระบบคำนวณเลื่อนเงินเดือน & วางแผนอนาคตข้าราชการครู (ก.ค.ศ.)">
+    <meta property="og:description" content="คำนวณฐานบน-ล่าง ปัดเศษหลักสิบ จำลองเงินเดือนถึงอายุ 60 ปี และคำนวณบำนาญ กบข. (ตามเกณฑ์ ก.ค.ศ. ว20)">
+    <meta property="og:locale" content="th_TH">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ระบบคำนวณเลื่อนเงินเดือน & วางแผนอนาคตข้าราชการครู">
+    <meta name="twitter:description" content="คำนวณฐานบน-ล่าง ปัดเศษหลักสิบ จำลองเงินเดือนถึงอายุ 60 ปี และคำนวณบำนาญ">
+    
+    <!-- PWA & Mobile Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#172554">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="เงินเดือนครู">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23172554'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='%23fbbf24'>🎓</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt & Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Salary Projection Graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            600: '#1e3a8a',
+                            700: '#172554',
+                            800: '#0f172a',
+                            900: '#0a0f1d',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f4f7fb;
+            font-family: 'Prompt', sans-serif;
+        }
+        .tab-active {
+            background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+        }
+        /* Custom Scrollbar for Table */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+            .card-shadow { box-shadow: none; border: 1px solid #e2e8f0; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-navy-800 via-navy-700 to-navy-600 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-400 text-2xl shadow-inner">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-gold-500/20 text-gold-400 border border-gold-400/30 mb-1">
+                            อ้างอิงเกณฑ์ ก.ค.ศ. (ว20)
+                        </span>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">ระบบคำนวณเลื่อนเงินเดือน & วางแผนอนาคตข้าราชการครู</h1>
+                        <p class="text-xs sm:text-sm text-slate-300">คำนวณฐานบน-ล่าง ปัดเศษหลักสิบ จำลองเงินเดือนถึงอายุ 60 ปี และคำนวณบำนาญ</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-start md:self-auto">
+                    <button onclick="switchTab('tab-single')" id="btn-tab-single" class="tab-btn tab-active px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>คำนวณแต่ละรอบ</span>
+                    </button>
+                    <button onclick="switchTab('tab-future')" id="btn-tab-future" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>จำลองอนาคต & เกษียณ</span>
+                    </button>
+                    <button onclick="switchTab('tab-ref')" id="btn-tab-ref" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-table"></i>
+                        <span>ตารางฐาน & เกณฑ์</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ==========================================
+             TAB 1: คำนวณเลื่อนเงินเดือนแต่ละรอบ
+             ========================================== -->
+        <section id="tab-single" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Column: Inputs -->
+                <div class="lg:col-span-5 bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                        <h2 class="text-lg font-bold text-navy-800 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-gold-500"></i> ข้อมูลการเลื่อนเงินเดือน
+                        </h2>
+                        <span class="text-xs text-slate-400">รอบ 1 เม.ย. / 1 ต.ค.</span>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- เลือกอันดับ -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">1. อันดับ / วิทยฐานะปัจจุบัน</label>
+                            <div class="grid grid-cols-3 gap-2.5" id="rank-selector">
+                                <button type="button" onclick="selectSingleRank('ครูผู้ช่วย')" data-rank="ครูผู้ช่วย" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">ครูผู้ช่วย</button>
+                                <button type="button" onclick="selectSingleRank('คศ.1')" data-rank="คศ.1" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.1</button>
+                                <button type="button" onclick="selectSingleRank('คศ.2')" data-rank="คศ.2" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.2 (ชำนาญการ)</button>
+                                <button type="button" onclick="selectSingleRank('คศ.3')" data-rank="คศ.3" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.3 (ชำนาญการพิเศษ)</button>
+                                <button type="button" onclick="selectSingleRank('คศ.4')" data-rank="คศ.4" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.4 (เชี่ยวชาญ)</button>
+                                <button type="button" onclick="selectSingleRank('คศ.5')" data-rank="คศ.5" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.5 (เชี่ยวชาญพิเศษ)</button>
+                            </div>
+                        </div>
+
+                        <!-- เงินเดือนปัจจุบัน -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label for="single-salary" class="block text-sm font-semibold text-slate-700">2. เงินเดือนปัจจุบัน (บาท)</label>
+                                <span id="single-range-hint" class="text-xs text-navy-600 font-medium bg-navy-50 px-2 py-0.5 rounded-md">ช่วง: 15,440 - 34,310</span>
+                            </div>
+                            <div class="relative">
+                                <input type="number" id="single-salary" value="23500" step="10" min="15050" max="80000" oninput="calculateSingle()"
+                                    class="w-full pl-4 pr-12 py-3 rounded-xl border border-slate-300 focus:border-navy-600 focus:ring-2 focus:ring-navy-600/20 text-lg font-bold text-navy-800 outline-none transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">บาท</span>
+                            </div>
+                            <!-- ตัวเลือกกรณีเงินเดือนข้ามขั้น (อาศัยเบิก) -->
+                            <div class="mt-2 flex items-center gap-2">
+                                <input type="checkbox" id="single-overflow" onchange="calculateSingle()" checked class="w-4 h-4 text-navy-600 rounded border-slate-300 focus:ring-navy-500">
+                                <label for="single-overflow" class="text-xs text-slate-600 cursor-pointer">ใช้เพดานอาศัยเบิกข้ามแท่งอัตโนมัติ (กรณีเงินเดือนทะลุเพดานอันดับตัวเอง)</label>
+                            </div>
+                        </div>
+
+                        <!-- เปอร์เซ็นต์ที่ได้ -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label for="single-percent" class="block text-sm font-semibold text-slate-700">3. ร้อยละที่ได้เลื่อน (%)</label>
+                                <span class="text-xs text-slate-500">ทศนิยม 2 ตำแหน่ง</span>
+                            </div>
+                            <div class="relative mb-2.5">
+                                <input type="number" id="single-percent" value="3.00" step="0.05" min="0" max="6" oninput="calculateSingle()"
+                                    class="w-full pl-4 pr-12 py-3 rounded-xl border border-slate-300 focus:border-navy-600 focus:ring-2 focus:ring-navy-600/20 text-lg font-bold text-emerald-700 outline-none transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">%</span>
+                            </div>
+                            <!-- ปุ่มลัดเปอร์เซ็นต์ยอดนิยม -->
+                            <div class="flex flex-wrap gap-1.5">
+                                <button type="button" onclick="setSinglePercent(2.50)" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-navy-50 hover:text-navy-700 text-slate-600 transition-colors">2.50%</button>
+                                <button type="button" onclick="setSinglePercent(2.80)" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-navy-50 hover:text-navy-700 text-slate-600 transition-colors">2.80%</button>
+                                <button type="button" onclick="setSinglePercent(3.00)" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-navy-50 hover:text-navy-700 text-slate-600 transition-colors">3.00%</button>
+                                <button type="button" onclick="setSinglePercent(3.20)" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-navy-50 hover:text-navy-700 text-slate-600 transition-colors">3.20%</button>
+                                <button type="button" onclick="setSinglePercent(3.50)" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-navy-50 hover:text-navy-700 text-slate-600 transition-colors">3.50%</button>
+                                <button type="button" onclick="setSinglePercent(4.00)" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-navy-50 hover:text-navy-700 text-slate-600 transition-colors">4.00%</button>
+                            </div>
+                        </div>
+
+                        <!-- รับเงินค่าตอบแทนพิเศษ (สำหรับ คศ.3 ขึ้นไป) -->
+                        <div class="pt-2 border-t border-slate-100">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">สรุปเงินวิทยฐานะ & ค่าตอบแทนรายเดือน</label>
+                            <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200/70 flex items-center justify-between">
+                                <div>
+                                    <div class="text-xs text-slate-500">เงินวิทยฐานะ + ค่าตอบแทนพิเศษ</div>
+                                    <div id="single-allowance-desc" class="text-sm font-semibold text-slate-700 mt-0.5">ไม่มีเงินวิทยฐานะ</div>
+                                </div>
+                                <div id="single-allowance-val" class="text-lg font-bold text-navy-700">0 ฿</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Calculation Results -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    <!-- Main Result Card -->
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 relative overflow-hidden">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100">
+                            <div>
+                                <span id="res-tier-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                                    <i class="fa-solid fa-layer-group"></i> ฐานล่าง
+                                </span>
+                                <h3 class="text-xl font-bold text-navy-900 mt-2">ผลการคำนวณเลื่อนเงินเดือน</h3>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button type="button" onclick="copySingleResult()" class="no-print px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-300 transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+                                    <i class="fa-brands fa-line text-sm text-emerald-600"></i>
+                                    <span>คัดลอกส่ง LINE</span>
+                                </button>
+                                <div class="text-left sm:text-right bg-navy-50/70 px-4 py-2 rounded-xl border border-navy-100">
+                                    <div class="text-xs text-slate-500">ฐานคำนวณที่ใช้</div>
+                                    <div id="res-base-used" class="text-lg sm:text-xl font-extrabold text-navy-700">22,780 บาท</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3 Step Boxes -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+                                <div class="text-xs text-slate-500 mb-1">1. คำนวณตามจริง (ก่อนปัด)</div>
+                                <div id="res-raw-inc" class="text-lg font-bold text-slate-700">683.40 บาท</div>
+                                <div id="res-formula-text" class="text-[11px] text-slate-400 mt-1">22,780 × 3.00%</div>
+                            </div>
+                            <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
+                                <div class="text-xs text-emerald-700 font-medium mb-1">2. เงินที่ได้เพิ่มจริง (ปัดเป็น 10 บ.)</div>
+                                <div id="res-rounded-inc" class="text-2xl font-extrabold text-emerald-600">+690 บาท</div>
+                                <div class="text-[11px] text-emerald-600/80 mt-1"><i class="fa-solid fa-circle-check"></i> ปัดเศษขึ้นตามเกณฑ์ ก.ค.ศ.</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-navy-700 to-navy-900 text-white p-4 rounded-xl shadow-md">
+                                <div class="text-xs text-gold-400 font-medium mb-1">3. เงินเดือนใหม่ที่จะได้รับ</div>
+                                <div id="res-new-salary" class="text-2xl font-extrabold tracking-tight">24,190 บาท</div>
+                                <div id="res-total-income" class="text-[11px] text-slate-300 mt-1">รวมวิทยฐานะ: 24,190 บ./ด.</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress towards Upper Base / Max Ceiling -->
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+                            <div class="flex justify-between items-center text-xs font-semibold mb-2">
+                                <span id="progress-label-left" class="text-slate-600">ความก้าวหน้าในแท่งเงินเดือน</span>
+                                <span id="progress-label-right" class="text-navy-700">อีก 700 บาท จะขึ้น "ฐานบน" (24,890 บ.)</span>
+                            </div>
+                            <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden flex">
+                                <div id="progress-bar-current" class="bg-navy-600 h-full transition-all duration-500" style="width: 65%"></div>
+                                <div id="progress-bar-inc" class="bg-emerald-500 h-full transition-all duration-500" style="width: 8%"></div>
+                            </div>
+                            <div class="flex justify-between text-[11px] text-slate-400 mt-1.5">
+                                <span id="bar-min-text">ขั้นต่ำ: 15,440</span>
+                                <span id="bar-mid-text" class="text-amber-600 font-medium">จุดตัดฐานบน: 24,890</span>
+                                <span id="bar-max-text">เพดานสูงสุด: 34,310</span>
+                            </div>
+                        </div>
+
+                        <!-- Alert Box for Ceiling or Overflow -->
+                        <div id="single-alert-box" class="hidden mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm flex items-start gap-3">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-lg mt-0.5"></i>
+                            <div id="single-alert-text"></div>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Table across % -->
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-gold-500"></i> ตารางเปรียบเทียบถ้าได้เปอร์เซ็นต์ระดับต่างๆ ในรอบนี้
+                        </h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-slate-500 bg-slate-50 border-b border-slate-200">
+                                    <tr>
+                                        <th class="py-2.5 px-3">ร้อยละ (%)</th>
+                                        <th class="py-2.5 px-3">ฐานคำนวณ</th>
+                                        <th class="py-2.5 px-3">คำนวณจริง</th>
+                                        <th class="py-2.5 px-3 text-emerald-700">ได้เพิ่มจริง (ปัดเศษ)</th>
+                                        <th class="py-2.5 px-3 text-right">เงินเดือนใหม่</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="single-compare-tbody" class="divide-y divide-slate-100">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 2: จำลองอนาคต & วางแผนเกษียณถึงอายุ 60
+             ========================================== -->
+        <section id="tab-future" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Column: Simulator Settings -->
+                <div class="lg:col-span-4 bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit no-print">
+                    <h2 class="text-lg font-bold text-navy-800 border-b border-slate-100 pb-3 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-route text-gold-500"></i> ตั้งค่าจำลองอนาคตถึงอายุ 60 ปี
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">อายุปัจจุบัน (ปี)</label>
+                                <input type="number" id="sim-age" value="28" min="20" max="59" oninput="runSimulation()"
+                                    class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-navy-800 focus:border-navy-600 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">อายุราชการปัจจุบัน (ปี)</label>
+                                <input type="number" id="sim-service" value="3" min="0" max="40" oninput="runSimulation()"
+                                    class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-navy-800 focus:border-navy-600 outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">อันดับปัจจุบัน</label>
+                                <select id="sim-rank" onchange="onSimRankChange()"
+                                    class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold text-navy-800 focus:border-navy-600 outline-none bg-white">
+                                    <option value="ครูผู้ช่วย">ครูผู้ช่วย</option>
+                                    <option value="คศ.1" selected>คศ.1</option>
+                                    <option value="คศ.2">คศ.2 (ชำนาญการ)</option>
+                                    <option value="คศ.3">คศ.3 (ชำนาญการพิเศษ)</option>
+                                    <option value="คศ.4">คศ.4 (เชี่ยวชาญ)</option>
+                                    <option value="คศ.5">คศ.5 (เชี่ยวชาญพิเศษ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">เงินเดือนปัจจุบัน (บาท)</label>
+                                <input type="number" id="sim-salary" value="21500" step="10" min="15050" max="76800" oninput="runSimulation()"
+                                    class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-navy-800 focus:border-navy-600 outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">เฉลี่ยขึ้นรอบเม.ย. (%)</label>
+                                <input type="number" id="sim-pct-apr" value="3.00" step="0.1" min="0" max="6" oninput="runSimulation()"
+                                    class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-emerald-700 focus:border-navy-600 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">เฉลี่ยขึ้นรอบต.ค. (%)</label>
+                                <input type="number" id="sim-pct-oct" value="3.00" step="0.1" min="0" max="6" oninput="runSimulation()"
+                                    class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-emerald-700 focus:border-navy-600 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- แผนการเลื่อนวิทยฐานะในอนาคต -->
+                        <div class="pt-3 border-t border-slate-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs font-bold text-navy-800 uppercase tracking-wider">วางแผนเลื่อนวิทยฐานะ (ตอนอายุเท่าไร)</label>
+                                <button type="button" onclick="setAutoCareerPath()" class="text-[11px] text-navy-600 hover:underline font-medium">ตั้งค่าตามเกณฑ์ปกติ</button>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3">ระบุอายุที่คาดว่าจะผ่านการประเมินวิทยฐานะ (เว้นว่างหรือใส่ 0 หากไม่วางแผนเลื่อนในระดับนั้น)</p>
+                            
+                            <div class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-medium text-slate-700">เลื่อนเป็น <b>คศ.1</b> ตอนอายุ:</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="number" id="plan-ks1" value="0" min="0" max="60" oninput="runSimulation()" class="w-16 px-2 py-1 text-center text-xs font-bold rounded-lg border border-slate-300">
+                                        <span class="text-xs text-slate-500">ปี</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-medium text-slate-700">เลื่อนเป็น <b>คศ.2 (ชำนาญการ)</b> ตอนอายุ:</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="number" id="plan-ks2" value="32" min="0" max="60" oninput="runSimulation()" class="w-16 px-2 py-1 text-center text-xs font-bold rounded-lg border border-slate-300">
+                                        <span class="text-xs text-slate-500">ปี</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-medium text-slate-700">เลื่อนเป็น <b>คศ.3 (ชำนาญการพิเศษ)</b> ตอนอายุ:</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="number" id="plan-ks3" value="37" min="0" max="60" oninput="runSimulation()" class="w-16 px-2 py-1 text-center text-xs font-bold rounded-lg border border-slate-300">
+                                        <span class="text-xs text-slate-500">ปี</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-medium text-slate-700">เลื่อนเป็น <b>คศ.4 (เชี่ยวชาญ)</b> ตอนอายุ:</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="number" id="plan-ks4" value="0" min="0" max="60" oninput="runSimulation()" class="w-16 px-2 py-1 text-center text-xs font-bold rounded-lg border border-slate-300">
+                                        <span class="text-xs text-slate-500">ปี</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ตัวเลือกการไหลข้ามแท่ง -->
+                        <div class="pt-2">
+                            <label class="flex items-start gap-2 cursor-pointer">
+                                <input type="checkbox" id="sim-overflow" checked onchange="runSimulation()" class="mt-0.5 w-4 h-4 text-navy-600 rounded border-slate-300">
+                                <span class="text-xs text-slate-600">เปิดใช้การอาศัยเบิกข้ามขั้น (กรณีเงินเดือนเต็มขั้นของตัวเอง ให้ไหลไปใช้เพดานของอันดับถัดไปได้ 1 ขั้น)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Simulation Dashboard & Table -->
+                <div class="lg:col-span-8 flex flex-col gap-6">
+                    
+                    <!-- 4 Highlight Cards at Age 60 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-gradient-to-br from-navy-800 to-navy-700 text-white p-4 rounded-2xl shadow-md">
+                            <div class="text-xs text-gold-400 font-medium">เงินเดือนสุดท้าย (อายุ 60)</div>
+                            <div id="sim-final-salary" class="text-2xl font-extrabold mt-1">69,040 ฿</div>
+                            <div id="sim-final-rank" class="text-[11px] text-slate-300 mt-1">อันดับสุดท้าย: คศ.3</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl card-shadow border border-slate-100">
+                            <div class="text-xs text-slate-500 font-medium">รายรับรวม/เดือน ตอนเกษียณ</div>
+                            <div id="sim-final-total" class="text-2xl font-extrabold text-emerald-600 mt-1">80,240 ฿</div>
+                            <div id="sim-final-allowance" class="text-[11px] text-slate-400 mt-1">รวมวิทยฐานะ+ค่าตอบแทน</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl card-shadow border border-slate-100">
+                            <div class="text-xs text-slate-500 font-medium">บำนาญรายเดือน (ประมาณการ)</div>
+                            <div id="sim-pension" class="text-2xl font-extrabold text-navy-700 mt-1">45,800 ฿</div>
+                            <div id="sim-pension-desc" class="text-[11px] text-slate-400 mt-1">อายุราชการรวม 35 ปี (70%)</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl card-shadow border border-slate-100">
+                            <div class="text-xs text-slate-500 font-medium">อายุที่เงินเดือนเริ่มตัน (เต็มขั้น)</div>
+                            <div id="sim-max-age" class="text-2xl font-extrabold text-amber-600 mt-1">อายุ 54 ปี</div>
+                            <div id="sim-max-desc" class="text-[11px] text-slate-400 mt-1">ได้รับเงินตอบแทนพิเศษแทน</div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Target Age Lookup -->
+                    <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shrink-0">
+                                <i class="fa-solid fa-magnifying-glass-dollar"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-amber-900 uppercase">เช็คเงินเดือนเป้าหมายตามอายุ</div>
+                                <div class="text-sm text-amber-800">อยากรู้ว่าเมื่ออายุ <input type="number" id="lookup-age" value="40" min="20" max="60" oninput="updateAgeLookup()" class="w-16 px-2 py-0.5 bg-white rounded-lg border border-amber-400 font-bold text-center text-navy-900"> ปี คุณจะได้เงินเท่าไร?</div>
+                            </div>
+                        </div>
+                        <div id="lookup-result" class="bg-white px-4 py-2.5 rounded-xl border border-amber-200 text-right w-full sm:w-auto">
+                            <div class="text-xs text-slate-500">เมื่ออายุ 40 ปี (รอบ ต.ค.)</div>
+                            <div class="text-lg font-extrabold text-navy-800">เงินเดือน 42,500 ฿ <span class="text-xs font-normal text-emerald-600">(รวมรับ 53,700 ฿)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Section -->
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold text-navy-800 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-area text-gold-500"></i> กราฟจำลองการเติบโตของเงินเดือนและรายรับรวมถึงอายุ 60 ปี
+                            </h3>
+                        </div>
+                        <div class="h-64 sm:h-72 w-full">
+                            <canvas id="salaryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Year-by-Year Table -->
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-navy-800">ตารางจำลองการเลื่อนเงินเดือนทุกรอบ (เม.ย. & ต.ค.)</h3>
+                                <p class="text-xs text-slate-500">แสดงการเปลี่ยนฐานล่าง-ฐานบน การปัดเศษหลักสิบ และการเลื่อนวิทยฐานะ</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <button type="button" onclick="copyFutureSummary()" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-300 transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+                                    <i class="fa-brands fa-line text-sm text-emerald-600"></i> คัดลอกสรุปส่ง LINE
+                                </button>
+                                <button type="button" onclick="exportSimCSV()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5">
+                                    <i class="fa-solid fa-file-csv text-emerald-600"></i> ดาวน์โหลด CSV
+                                </button>
+                                <button type="button" onclick="window.print()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5">
+                                    <i class="fa-solid fa-print"></i> พิมพ์รายงาน
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto max-h-[500px] overflow-y-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-xs sm:text-sm text-left border-collapse">
+                                <thead class="text-xs text-slate-600 bg-slate-100 sticky top-0 z-10 shadow-sm">
+                                    <tr>
+                                        <th class="py-3 px-3">อายุ (ปี)</th>
+                                        <th class="py-3 px-3">รอบ</th>
+                                        <th class="py-3 px-3">อันดับ</th>
+                                        <th class="py-3 px-3">เงินเดือนเดิม</th>
+                                        <th class="py-3 px-3">ฐานที่ใช้</th>
+                                        <th class="py-3 px-3">% ที่ได้</th>
+                                        <th class="py-3 px-3 text-emerald-700">+ได้เพิ่ม</th>
+                                        <th class="py-3 px-3 font-bold text-navy-800">เงินเดือนใหม่</th>
+                                        <th class="py-3 px-3">วิทยฐานะ</th>
+                                        <th class="py-3 px-3">สถานะ / หมายเหตุ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sim-table-body" class="divide-y divide-slate-100">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 3: ตารางฐานในการคำนวณ & สิ่งที่ครูควรรู้
+             ========================================== -->
+        <section id="tab-ref" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Official Table matching the uploaded image -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                    <div class="border-b border-slate-100 pb-4 mb-5">
+                        <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">ตารางมาตรฐาน ก.ค.ศ.</span>
+                        <h2 class="text-lg font-bold text-navy-900 mt-2">ฐานในการคำนวณและช่วงเงินเดือนสำหรับการเลื่อนเงินเดือน</h2>
+                        <p class="text-xs text-slate-500">สำหรับข้าราชการครูและบุคลากรทางการศึกษาที่มีใบอนุญาตประกอบวิชาชีพ</p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border border-slate-300 text-center">
+                            <thead class="bg-amber-200/80 text-navy-900 font-bold border-b border-slate-300">
+                                <tr>
+                                    <th class="py-3 px-3 border-r border-slate-300">อันดับ</th>
+                                    <th class="py-3 px-3 border-r border-slate-300">ช่วงเงินเดือน (บาท)</th>
+                                    <th class="py-3 px-3 border-r border-slate-300">ระดับฐาน</th>
+                                    <th class="py-3 px-3 bg-amber-300/60">ฐานในการคำนวณ</th>
+                                    <th class="py-3 px-3 border-l border-slate-300">เงินวิทยฐานะ/ด.</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-300 font-medium">
+                                <!-- คศ.5 -->
+                                <tr class="bg-amber-50/40">
+                                    <td rowspan="2" class="font-bold text-base text-navy-900 border-r border-slate-300 bg-white">คศ.5</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">60,840 - 76,800</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-navy-700 font-bold">บน</td>
+                                    <td class="py-2.5 px-3 font-extrabold text-navy-900">68,560</td>
+                                    <td rowspan="2" class="py-2.5 px-3 border-l border-slate-300 bg-white text-xs">13,000 + 13,000*<br><span class="text-emerald-700 font-bold">(26,000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">29,980 - 60,830</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-slate-600">ล่าง</td>
+                                    <td class="py-2.5 px-3 font-bold text-slate-800">60,830</td>
+                                </tr>
+                                <!-- คศ.4 -->
+                                <tr class="bg-amber-50/40">
+                                    <td rowspan="2" class="font-bold text-base text-navy-900 border-r border-slate-300 bg-white">คศ.4</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">50,330 - 69,040</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-navy-700 font-bold">บน</td>
+                                    <td class="py-2.5 px-3 font-extrabold text-navy-900">59,630</td>
+                                    <td rowspan="2" class="py-2.5 px-3 border-l border-slate-300 bg-white text-xs">9,900 + 9,900*<br><span class="text-emerald-700 font-bold">(19,800)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">24,400 - 50,320</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-slate-600">ล่าง</td>
+                                    <td class="py-2.5 px-3 font-bold text-slate-800">50,320</td>
+                                </tr>
+                                <!-- คศ.3 -->
+                                <tr class="bg-amber-50/40">
+                                    <td rowspan="2" class="font-bold text-base text-navy-900 border-r border-slate-300 bg-white">คศ.3</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">40,280 - 58,390</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-navy-700 font-bold">บน</td>
+                                    <td class="py-2.5 px-3 font-extrabold text-navy-900">49,330</td>
+                                    <td rowspan="2" class="py-2.5 px-3 border-l border-slate-300 bg-white text-xs">5,600 + 5,600*<br><span class="text-emerald-700 font-bold">(11,200)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">19,860 - 40,270</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-slate-600">ล่าง</td>
+                                    <td class="py-2.5 px-3 font-bold text-slate-800">37,200</td>
+                                </tr>
+                                <!-- คศ.2 -->
+                                <tr class="bg-amber-50/40">
+                                    <td rowspan="2" class="font-bold text-base text-navy-900 border-r border-slate-300 bg-white">คศ.2</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">30,210 - 41,620</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-navy-700 font-bold">บน</td>
+                                    <td class="py-2.5 px-3 font-extrabold text-navy-900">35,270</td>
+                                    <td rowspan="2" class="py-2.5 px-3 border-l border-slate-300 bg-white text-xs font-bold text-emerald-700">3,500</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">16,190 - 30,200</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-slate-600">ล่าง</td>
+                                    <td class="py-2.5 px-3 font-bold text-slate-800">30,200</td>
+                                </tr>
+                                <!-- คศ.1 -->
+                                <tr class="bg-amber-50/40">
+                                    <td rowspan="2" class="font-bold text-base text-navy-900 border-r border-slate-300 bg-white">คศ.1</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">24,890 - 34,310</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-navy-700 font-bold">บน</td>
+                                    <td class="py-2.5 px-3 font-extrabold text-navy-900">29,600</td>
+                                    <td rowspan="2" class="py-2.5 px-3 border-l border-slate-300 bg-white text-xs text-slate-400">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">15,440 - 24,880</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-slate-600">ล่าง</td>
+                                    <td class="py-2.5 px-3 font-bold text-slate-800">22,780</td>
+                                </tr>
+                                <!-- ครูผู้ช่วย -->
+                                <tr class="bg-amber-50/40">
+                                    <td rowspan="2" class="font-bold text-base text-navy-900 border-r border-slate-300 bg-white">ครูผู้ช่วย</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">19,910 - 24,750</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-navy-700 font-bold">บน</td>
+                                    <td class="py-2.5 px-3 font-extrabold text-navy-900">22,330</td>
+                                    <td rowspan="2" class="py-2.5 px-3 border-l border-slate-300 bg-white text-xs text-slate-400">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 border-r border-slate-300">15,050 - 19,900</td>
+                                    <td class="py-2.5 px-3 border-r border-slate-300 text-slate-600">ล่าง</td>
+                                    <td class="py-2.5 px-3 font-bold text-slate-800">17,480</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Essential Knowledge & What else is needed -->
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <h3 class="text-base font-bold text-navy-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-gold-500"></i> หลักเกณฑ์สำคัญที่ระบบคำนวณให้อัตโนมัติ
+                        </h3>
+                        <ul class="space-y-3 text-xs sm:text-sm text-slate-600">
+                            <li class="flex items-start gap-2.5">
+                                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">1</span>
+                                <div>
+                                    <b class="text-slate-800">การปัดเศษเป็นจำนวนเต็ม 10 บาทเสมอ:</b> ตามหลักเกณฑ์ ก.ค.ศ. เมื่อนำ <code class="bg-slate-100 px-1 rounded">ฐานคำนวณ × %</code> หากมีเศษไม่ถึง 10 บาท แม้จะเป็นทศนิยมเพียง .01 สตางค์ (เช่น คำนวณได้ 680.40 บาท) ระบบจะปัดขึ้นเป็น 690 บาททันที
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</span>
+                                <div>
+                                    <b class="text-slate-800">จุดเปลี่ยน "ฐานล่าง" สู่ "ฐานบน":</b> ทันทีที่เงินเดือนแตะเกณฑ์ขั้นต่ำของฐานบน (เช่น คศ.1 แตะ 24,890 บาท) ในรอบถัดไปตัวคูณฐานจะกระโดดจาก 22,780 เป็น 29,600 ทันที ทำให้เงินเดือนขึ้นก้าวกระโดด
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</span>
+                                <div>
+                                    <b class="text-slate-800">การไหลข้ามขั้น (อาศัยเบิก):</b> เมื่อเงินเดือนชนเพดานของอันดับตนเอง (เช่น คศ.2 ตันที่ 41,620 บาท) ข้าราชการครูสามารถขยายเพดานไปอาศัยเบิกเพดานของอันดับถัดไปได้ 1 อันดับ (คศ.2 ไหลไปตันที่เพดาน คศ.3 คือ 58,390 บาท และ คศ.3 ไหลไปตันที่เพดาน คศ.4 คือ 69,040 บาท)
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">4</span>
+                                <div>
+                                    <b class="text-slate-800">กรณีเงินเดือนเต็มขั้น (ตันสมบูรณ์):</b> หากเงินเดือนชนเพดานสูงสุดแล้ว จะไม่ได้บวกทบในฐานเงินเดือน แต่จะได้รับเป็น <b>"ค่าตอบแทนพิเศษ"</b> โอนเข้าบัญชีตาม % ที่ได้รับการประเมินในรอบนั้นๆ แทน
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-navy-800 to-navy-900 text-white rounded-2xl p-6 shadow-md">
+                        <h3 class="text-base font-bold text-gold-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group"></i> ฟีเจอร์ที่ต่อยอดเพิ่มได้สำหรับโรงเรียน/เขตพื้นที่
+                        </h3>
+                        <div class="space-y-2.5 text-xs text-slate-200">
+                            <p>• <b>ระบบคำนวณวงเงินบริหารงานบุคคล (โควตา 3% ของโรงเรียน):</b> สำหรับฝ่ายบุคคล/ผอ. ใช้เกลี่ย % ของครูทั้งโรงเรียนไม่ให้เกินวงเงินที่เขตพื้นที่จัดสรร</p>
+                            <p>• <b>ตัวคำนวณ กบข. (GPF Simulator):</b> คำนวณเงินสะสม 3% - 30% และผลตอบแทนแผนการลงทุนเมื่อเกษียณ</p>
+                            <p>• <b>แจ้งเตือนนับเวลาทำวิทยฐานะ (วPA):</b> นับระยะเวลาครองตำแหน่ง 4 ปีเพื่อยื่นขอมีหรือเลื่อนวิทยฐานะล่วงหน้า</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+            <div>ระบบคำนวณฐานเงินเดือนและวางแผนความก้าวหน้าข้าราชการครู (อ้างอิงตาราง ก.ค.ศ.)</div>
+            <div>การปัดเศษหลักสิบและการคำนวณบำนาญเป็นไปตามระเบียบราชการเบื้องต้น</div>
+        </div>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // ข้อมูลตารางฐานในการคำนวณ ก.ค.ศ.
+        const SALARY_TABLE = {
+            'ครูผู้ช่วย': {
+                order: 0,
+                lower: { min: 15050, max: 19900, base: 17480 },
+                upper: { min: 19910, max: 24750, base: 22330 },
+                maxCeiling: 24750,
+                overflowCeiling: 24750, // ครูผู้ช่วยปกติครบ 2 ปีปรับเป็น คศ.1
+                overflowRank: null,
+                allowance: 0,
+                allowanceText: 'ไม่มีเงินวิทยฐานะ'
+            },
+            'คศ.1': {
+                order: 1,
+                lower: { min: 15440, max: 24880, base: 22780 },
+                upper: { min: 24890, max: 34310, base: 29600 },
+                maxCeiling: 34310,
+                overflowCeiling: 41620, // อาศัยเบิกเพดาน คศ.2
+                overflowRank: 'คศ.2',
+                allowance: 0,
+                allowanceText: 'ไม่มีเงินวิทยฐานะ'
+            },
+            'คศ.2': {
+                order: 2,
+                lower: { min: 16190, max: 30200, base: 30200 },
+                upper: { min: 30210, max: 41620, base: 35270 },
+                maxCeiling: 41620,
+                overflowCeiling: 58390, // อาศัยเบิกเพดาน คศ.3
+                overflowRank: 'คศ.3',
+                allowance: 3500,
+                allowanceText: 'วิทยฐานะชำนาญการ 3,500 บ.'
+            },
+            'คศ.3': {
+                order: 3,
+                lower: { min: 19860, max: 40270, base: 37200 },
+                upper: { min: 40280, max: 58390, base: 49330 },
+                maxCeiling: 58390,
+                overflowCeiling: 69040, // อาศัยเบิกเพดาน คศ.4
+                overflowRank: 'คศ.4',
+                allowance: 11200,
+                allowanceText: 'วิทยฐานะ 5,600 + ค่าตอบแทน 5,600 บ.'
+            },
+            'คศ.4': {
+                order: 4,
+                lower: { min: 24400, max: 50320, base: 50320 },
+                upper: { min: 50330, max: 69040, base: 59630 },
+                maxCeiling: 69040,
+                overflowCeiling: 76800, // อาศัยเบิกเพดาน คศ.5
+                overflowRank: 'คศ.5',
+                allowance: 19800,
+                allowanceText: 'วิทยฐานะ 9,900 + ค่าตอบแทน 9,900 บ.'
+            },
+            'คศ.5': {
+                order: 5,
+                lower: { min: 29980, max: 60830, base: 60830 },
+                upper: { min: 60840, max: 76800, base: 68560 },
+                maxCeiling: 76800,
+                overflowCeiling: 76800,
+                overflowRank: null,
+                allowance: 26000,
+                allowanceText: 'วิทยฐานะ 13,000 + ค่าตอบแทน 13,000 บ.'
+            }
+        };
+
+        let currentSingleRank = 'คศ.1';
+        let salaryChartInstance = null;
+        let lastSimulationRows = [];
+
+        // ฟังก์ชันปัดเศษขึ้นเป็นจำนวนเต็ม 10 บาทตามเกณฑ์ ก.ค.ศ.
+        function roundUpToTen(amount) {
+            if (amount <= 0) return 0;
+            // ป้องกันปัญหา floating point ใน JS เช่น 850.0000000001
+            const fixed = Math.round(amount * 10000) / 10000;
+            return Math.ceil(fixed / 10) * 10;
+        }
+
+        // ฟังก์ชันหาฐานคำนวณจากอันดับและเงินเดือนปัจจุบัน
+        function getCalculationDetails(rankKey, currentSalary, allowOverflow = true) {
+            const rankInfo = SALARY_TABLE[rankKey];
+            let effectiveRankInfo = rankInfo;
+            let isOverflowing = false;
+
+            // ตรวจสอบว่าเงินเดือนเกินเพดานปกติของอันดับตัวเองหรือไม่
+            if (currentSalary > rankInfo.maxCeiling && allowOverflow && rankInfo.overflowRank) {
+                effectiveRankInfo = SALARY_TABLE[rankInfo.overflowRank];
+                isOverflowing = true;
+            }
+
+            let tier = 'ล่าง';
+            let base = effectiveRankInfo.lower.base;
+
+            if (currentSalary >= effectiveRankInfo.upper.min) {
+                tier = 'บน';
+                base = effectiveRankInfo.upper.base;
+            }
+
+            const ceiling = allowOverflow ? rankInfo.overflowCeiling : rankInfo.maxCeiling;
+
+            return {
+                tier,
+                base,
+                isOverflowing,
+                overflowRankName: isOverflowing ? rankInfo.overflowRank : null,
+                normalCeiling: rankInfo.maxCeiling,
+                effectiveCeiling: ceiling,
+                upperStart: effectiveRankInfo.upper.min,
+                minSalary: rankInfo.lower.min,
+                allowance: rankInfo.allowance,
+                allowanceText: rankInfo.allowanceText
+            };
+        }
+
+        // สลับแท็บ
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('bg-white/10', 'text-white');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('bg-white/10');
+
+            if (tabId === 'tab-future') {
+                runSimulation();
+            }
+        }
+
+        // เลือกอันดับในแท็บที่ 1
+        function selectSingleRank(rank) {
+            currentSingleRank = rank;
+            document.querySelectorAll('#rank-selector .rank-btn').forEach(btn => {
+                if (btn.dataset.rank === rank) {
+                    btn.className = 'rank-btn py-2.5 px-3 rounded-xl border border-navy-700 bg-navy-700 text-white text-sm font-bold shadow-sm transition-all';
+                } else {
+                    btn.className = 'rank-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm font-medium transition-all';
+                }
+            });
+
+            // ตรวจสอบว่าเงินเดือนที่กรอกอยู่นอกช่วงขั้นต่ำหรือไม่ ถ้าต่ำกว่าขั้นต่ำให้ปรับเข้าช่วง
+            const salaryInput = document.getElementById('single-salary');
+            const info = SALARY_TABLE[rank];
+            if (parseFloat(salaryInput.value) < info.lower.min) {
+                salaryInput.value = info.lower.min;
+            }
+            calculateSingle();
+        }
+
+        function setSinglePercent(pct) {
+            document.getElementById('single-percent').value = pct.toFixed(2);
+            calculateSingle();
+        }
+
+        // คำนวณแท็บที่ 1
+        function calculateSingle() {
+            const salary = parseFloat(document.getElementById('single-salary').value) || 0;
+            const percent = parseFloat(document.getElementById('single-percent').value) || 0;
+            const allowOverflow = document.getElementById('single-overflow').checked;
+
+            const rankInfo = SALARY_TABLE[currentSingleRank];
+            const details = getCalculationDetails(currentSingleRank, salary, allowOverflow);
+
+            // อัปเดตข้อความช่วงเงินเดือนและวิทยฐานะ
+            document.getElementById('single-range-hint').textContent = `ช่วงปกติ: ${rankInfo.lower.min.toLocaleString()} - ${rankInfo.maxCeiling.toLocaleString()}`;
+            document.getElementById('single-allowance-desc').textContent = details.allowanceText;
+            document.getElementById('single-allowance-val').textContent = `${details.allowance.toLocaleString()} ฿`;
+
+            // คำนวณเงินเพิ่ม
+            const rawIncrease = (details.base * percent) / 100;
+            const roundedIncrease = roundUpToTen(rawIncrease);
+
+            let newSalary = salary + roundedIncrease;
+            let specialBonus = 0;
+            let alertMessages = [];
+
+            if (details.isOverflowing) {
+                alertMessages.push(`<b>อยู่ในช่วงอาศัยเบิกข้ามขั้น:</b> เงินเดือนปัจจุบันเกินเพดานปกติของ ${currentSingleRank} (${rankInfo.maxCeiling.toLocaleString()} บ.) ระบบจึงใช้ฐานคำนวณของ <b>${details.overflowRankName}</b>`);
+            }
+
+            if (newSalary > details.effectiveCeiling) {
+                const overAmount = newSalary - details.effectiveCeiling;
+                newSalary = details.effectiveCeiling;
+                specialBonus = rawIncrease; // กรณีเต็มขั้น จะได้รับเป็นเงินตอบแทนพิเศษตาม %
+                alertMessages.push(`<b>เงินเดือนชนเพดานสูงสุด (${details.effectiveCeiling.toLocaleString()} บาท):</b> เงินเดือนจะตันที่เพดานนี้ ส่วนที่เกินหรือการประเมินในรอบถัดไปจะได้รับเป็น <b>"ค่าตอบแทนพิเศษนอกเหนือเงินเดือน"</b> ประมาณ ${rawIncrease.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บาท/เดือน`);
+            } else if (salary < details.upperStart && newSalary >= details.upperStart) {
+                alertMessages.push(`<b>ข่าวดี! รอบหน้าขึ้น "ฐานบน":</b> เงินเดือนใหม่ของคุณ (${newSalary.toLocaleString()} บ.) ข้ามจุดตัดฐานบนที่ ${details.upperStart.toLocaleString()} บ. แล้ว ทำให้การเลื่อนเงินเดือนรอบถัดไปจะได้ใช้ฐานบนในการคำนวณ!`);
+            }
+
+            // แสดงผล Badge ฐานบน/ล่าง
+            const badgeEl = document.getElementById('res-tier-badge');
+            if (details.tier === 'บน') {
+                badgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800';
+                badgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> ฐานบน ${details.isOverflowing ? `(อาศัยเบิก ${details.overflowRankName})` : ''}`;
+            } else {
+                badgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800';
+                badgeEl.innerHTML = `<i class="fa-solid fa-layer-group"></i> ฐานล่าง ${details.isOverflowing ? `(อาศัยเบิก ${details.overflowRankName})` : ''}`;
+            }
+
+            document.getElementById('res-base-used').textContent = `${details.base.toLocaleString()} บาท`;
+            document.getElementById('res-raw-inc').textContent = `${rawIncrease.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} บาท`;
+            document.getElementById('res-formula-text').textContent = `สูตร: ${details.base.toLocaleString()} × ${percent.toFixed(2)}%`;
+            document.getElementById('res-rounded-inc').textContent = `+${roundedIncrease.toLocaleString()} บาท`;
+            document.getElementById('res-new-salary').textContent = `${newSalary.toLocaleString()} บาท`;
+            document.getElementById('res-total-income').textContent = `รวมวิทยฐานะ: ${(newSalary + details.allowance).toLocaleString()} บ./ด.`;
+
+            // Progress Bar
+            const minVal = details.minSalary;
+            const maxVal = details.effectiveCeiling;
+            const totalSpan = Math.max(1, maxVal - minVal);
+            const curPct = Math.max(0, Math.min(100, ((salary - minVal) / totalSpan) * 100));
+            const incPct = Math.max(0, Math.min(100 - curPct, ((newSalary - salary) / totalSpan) * 100));
+
+            document.getElementById('progress-bar-current').style.width = `${curPct}%`;
+            document.getElementById('progress-bar-inc').style.width = `${incPct}%`;
+            document.getElementById('bar-min-text').textContent = `ขั้นต่ำ: ${minVal.toLocaleString()}`;
+            document.getElementById('bar-mid-text').textContent = `จุดตัดฐานบน: ${details.upperStart.toLocaleString()}`;
+            document.getElementById('bar-max-text').textContent = `เพดาน: ${maxVal.toLocaleString()}`;
+
+            const rightLabel = document.getElementById('progress-label-right');
+            if (newSalary < details.upperStart) {
+                rightLabel.textContent = `อีก ${(details.upperStart - newSalary).toLocaleString()} บาท จะขึ้น "ฐานบน" (${details.upperStart.toLocaleString()} บ.)`;
+            } else if (newSalary < maxVal) {
+                rightLabel.textContent = `อยู่ในช่วงฐานบน (เหลืออีก ${(maxVal - newSalary).toLocaleString()} บาท จะเต็มขั้น)`;
+            } else {
+                rightLabel.textContent = `เงินเดือนเต็มขั้นสูงสุดแล้ว`;
+            }
+
+            // Alert Box
+            const alertBox = document.getElementById('single-alert-box');
+            const alertText = document.getElementById('single-alert-text');
+            if (alertMessages.length > 0) {
+                alertBox.classList.remove('hidden');
+                alertText.innerHTML = alertMessages.join('<br><br>');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+
+            // สร้างตารางเปรียบเทียบเปอร์เซ็นต์
+            const comparePcts = [2.0, 2.5, 2.8, 3.0, 3.2, 3.5, 4.0];
+            const tbody = document.getElementById('single-compare-tbody');
+            tbody.innerHTML = '';
+
+            comparePcts.forEach(p => {
+                const raw = (details.base * p) / 100;
+                const rounded = roundUpToTen(raw);
+                const nextSal = Math.min(details.effectiveCeiling, salary + rounded);
+                const isSelected = Math.abs(p - percent) < 0.01;
+
+                const tr = document.createElement('tr');
+                tr.className = isSelected ? 'bg-navy-50/80 font-semibold' : 'hover:bg-slate-50';
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3">${p.toFixed(2)}% ${isSelected ? '<span class="ml-1 text-[10px] bg-navy-600 text-white px-1.5 py-0.5 rounded">ที่เลือก</span>' : ''}</td>
+                    <td class="py-2.5 px-3 text-slate-600">${details.base.toLocaleString()} (${details.tier})</td>
+                    <td class="py-2.5 px-3 text-slate-500">${raw.toFixed(2)}</td>
+                    <td class="py-2.5 px-3 text-emerald-600 font-bold">+${rounded.toLocaleString()}</td>
+                    <td class="py-2.5 px-3 text-right font-bold text-navy-800">${nextSal.toLocaleString()} บาท</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ====================================================
+        // TAB 2: ระบบจำลองอนาคต & เกษียณอายุ 60 ปี
+        // ====================================================
+        function onSimRankChange() {
+            const rank = document.getElementById('sim-rank').value;
+            const salaryInput = document.getElementById('sim-salary');
+            const minSal = SALARY_TABLE[rank].lower.min;
+            if (parseFloat(salaryInput.value) < minSal) {
+                salaryInput.value = minSal;
+            }
+            setAutoCareerPath();
+        }
+
+        function setAutoCareerPath() {
+            const currentAge = parseInt(document.getElementById('sim-age').value) || 28;
+            const currentRank = document.getElementById('sim-rank').value;
+            const rankOrder = SALARY_TABLE[currentRank].order;
+
+            // ตั้งค่าอายุเลื่อนวิทยฐานะมาตรฐาน (ครูผู้ช่วย 2 ปี -> คศ.1 4 ปี -> คศ.2 4 ปี -> คศ.3)
+            let nextAge = currentAge;
+            document.getElementById('plan-ks1').value = 0;
+            document.getElementById('plan-ks2').value = 0;
+            document.getElementById('plan-ks3').value = 0;
+            document.getElementById('plan-ks4').value = 0;
+
+            if (rankOrder === 0) { // ครูผู้ช่วย
+                document.getElementById('plan-ks1').value = Math.min(60, nextAge + 2);
+                document.getElementById('plan-ks2').value = Math.min(60, nextAge + 6);
+                document.getElementById('plan-ks3').value = Math.min(60, nextAge + 10);
+            } else if (rankOrder === 1) { // คศ.1
+                document.getElementById('plan-ks2').value = Math.min(60, nextAge + 4);
+                document.getElementById('plan-ks3').value = Math.min(60, nextAge + 8);
+            } else if (rankOrder === 2) { // คศ.2
+                document.getElementById('plan-ks3').value = Math.min(60, nextAge + 4);
+            }
+            runSimulation();
+        }
+
+        function runSimulation() {
+            const startAge = Math.min(59, Math.max(20, parseInt(document.getElementById('sim-age').value) || 28));
+            const startService = Math.max(0, parseInt(document.getElementById('sim-service').value) || 3);
+            let currentRank = document.getElementById('sim-rank').value;
+            let currentSalary = parseFloat(document.getElementById('sim-salary').value) || 20000;
+            const pctApr = parseFloat(document.getElementById('sim-pct-apr').value) || 3.0;
+            const pctOct = parseFloat(document.getElementById('sim-pct-oct').value) || 3.0;
+            const allowOverflow = document.getElementById('sim-overflow').checked;
+
+            const planKS1 = parseInt(document.getElementById('plan-ks1').value) || 0;
+            const planKS2 = parseInt(document.getElementById('plan-ks2').value) || 0;
+            const planKS3 = parseInt(document.getElementById('plan-ks3').value) || 0;
+            const planKS4 = parseInt(document.getElementById('plan-ks4').value) || 0;
+
+            lastSimulationRows = [];
+            let firstMaxAge = null;
+
+            const chartLabels = [];
+            const chartSalaryData = [];
+            const chartTotalData = [];
+
+            for (let age = startAge; age <= 60; age++) {
+                // เช็คการเลื่อนวิทยฐานะตามแผนเมื่อถึงอายุที่กำหนด (ปรับในรอบ เม.ย.)
+                let promotedThisYear = false;
+                if (age === planKS1 && SALARY_TABLE[currentRank].order < 1) {
+                    currentRank = 'คศ.1';
+                    promotedThisYear = true;
+                }
+                if (age === planKS2 && SALARY_TABLE[currentRank].order < 2) {
+                    currentRank = 'คศ.2';
+                    promotedThisYear = true;
+                }
+                if (age === planKS3 && SALARY_TABLE[currentRank].order < 3) {
+                    currentRank = 'คศ.3';
+                    promotedThisYear = true;
+                }
+                if (age === planKS4 && SALARY_TABLE[currentRank].order < 4) {
+                    currentRank = 'คศ.4';
+                    promotedThisYear = true;
+                }
+
+                // จำลอง 2 รอบต่อปี (1 เม.ย. และ 1 ต.ค.)
+                const rounds = [
+                    { name: '1 เม.ย.', pct: pctApr, isFirstRoundOfYear: true },
+                    { name: '1 ต.ค.', pct: pctOct, isFirstRoundOfYear: false }
+                ];
+
+                rounds.forEach(r => {
+                    const prevDetails = getCalculationDetails(currentRank, currentSalary, allowOverflow);
+                    const rawInc = (prevDetails.base * r.pct) / 100;
+                    const roundedInc = roundUpToTen(rawInc);
+
+                    let nextSalary = currentSalary + roundedInc;
+                    let statusBadges = [];
+
+                    if (r.isFirstRoundOfYear && promotedThisYear) {
+                        statusBadges.push(`<span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[11px]">เลื่อนเป็น ${currentRank}</span>`);
+                    }
+
+                    // ตรวจสอบว่าเงินเดือนชนเพดานหรือไม่
+                    if (nextSalary >= prevDetails.effectiveCeiling) {
+                        nextSalary = prevDetails.effectiveCeiling;
+                        if (!firstMaxAge) firstMaxAge = age;
+                        statusBadges.push(`<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold text-[11px]">เต็มขั้น (รับเงินพิเศษ ${Math.round(rawInc).toLocaleString()} บ.)</span>`);
+                    } else if (currentSalary < prevDetails.upperStart && nextSalary >= prevDetails.upperStart) {
+                        statusBadges.push(`<span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold text-[11px]">ขึ้นฐานบน!</span>`);
+                    } else if (prevDetails.isOverflowing) {
+                        statusBadges.push(`<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[11px]">อาศัยเบิก ${prevDetails.overflowRankName}</span>`);
+                    }
+
+                    const actualAdded = nextSalary - currentSalary;
+
+                    lastSimulationRows.push({
+                        age,
+                        round: r.name,
+                        rank: currentRank,
+                        oldSalary: currentSalary,
+                        tier: prevDetails.tier,
+                        base: prevDetails.base,
+                        pct: r.pct,
+                        added: actualAdded,
+                        roundedCalc: roundedInc,
+                        newSalary: nextSalary,
+                        allowance: prevDetails.allowance,
+                        totalIncome: nextSalary + prevDetails.allowance,
+                        statusHtml: statusBadges.join(' ')
+                    });
+
+                    currentSalary = nextSalary;
+                });
+
+                // เก็บข้อมูลกราฟ (ใช้ยอดสิ้นปีงบประมาณ รอบ ต.ค.)
+                const endOfYearRow = lastSimulationRows[lastSimulationRows.length - 1];
+                chartLabels.push(`อายุ ${age}`);
+                chartSalaryData.push(endOfYearRow.newSalary);
+                chartTotalData.push(endOfYearRow.totalIncome);
+            }
+
+            // อัปเดตการ์ดสรุปผลตอนอายุ 60
+            const finalRow = lastSimulationRows[lastSimulationRows.length - 1];
+            document.getElementById('sim-final-salary').textContent = `${finalRow.newSalary.toLocaleString()} ฿`;
+            document.getElementById('sim-final-rank').textContent = `อันดับสุดท้าย: ${finalRow.rank}`;
+            document.getElementById('sim-final-total').textContent = `${finalRow.totalIncome.toLocaleString()} ฿`;
+            document.getElementById('sim-final-allowance').textContent = `เงินเดือน + วิทยฐานะ ${finalRow.allowance.toLocaleString()} ฿`;
+
+            // คำนวณบำนาญ (เฉลี่ย 60 เดือนสุดท้าย = 10 รอบสุดท้าย)
+            const last10Rounds = lastSimulationRows.slice(-10);
+            const avg60Months = last10Rounds.reduce((sum, item) => sum + item.newSalary, 0) / last10Rounds.length;
+            const totalServiceYears = startService + (60 - startAge);
+            // สูตรบำนาญ กบข. ประมาณการ (เงินเดือนเฉลี่ย 60 เดือนสุดท้าย * อายุราชการ / 50 เพดานไม่เกิน 70%)
+            const pensionPct = Math.min(70, (totalServiceYears / 50) * 100);
+            const estimatedPension = Math.round((avg60Months * pensionPct) / 100);
+
+            document.getElementById('sim-pension').textContent = `${estimatedPension.toLocaleString()} ฿`;
+            document.getElementById('sim-pension-desc').textContent = `อายุราชการรวม ${totalServiceYears} ปี (${pensionPct.toFixed(0)}%)`;
+
+            if (firstMaxAge) {
+                document.getElementById('sim-max-age').textContent = `อายุ ${firstMaxAge} ปี`;
+                document.getElementById('sim-max-desc').textContent = `ชนเพดาน ${finalRow.newSalary.toLocaleString()} บ.`;
+            } else {
+                document.getElementById('sim-max-age').textContent = `ไม่ชนเพดาน`;
+                document.getElementById('sim-max-desc').textContent = `เติบโตต่อเนื่องถึงอายุ 60 ปี`;
+            }
+
+            // อัปเดตตาราง
+            const tbody = document.getElementById('sim-table-body');
+            tbody.innerHTML = '';
+            lastSimulationRows.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = row.round === '1 ต.ค.' ? 'bg-slate-50/60 hover:bg-navy-50/40' : 'hover:bg-navy-50/40';
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 font-bold text-navy-900">${row.age}</td>
+                    <td class="py-2.5 px-3 text-slate-500">${row.round}</td>
+                    <td class="py-2.5 px-3 font-semibold text-navy-700">${row.rank}</td>
+                    <td class="py-2.5 px-3 text-slate-600">${row.oldSalary.toLocaleString()}</td>
+                    <td class="py-2.5 px-3"><span class="text-xs px-1.5 py-0.5 rounded ${row.tier === 'บน' ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'bg-amber-50 text-amber-700'}">${row.base.toLocaleString()} (${row.tier})</span></td>
+                    <td class="py-2.5 px-3 text-slate-600">${row.pct.toFixed(1)}%</td>
+                    <td class="py-2.5 px-3 font-bold text-emerald-600">+${row.added.toLocaleString()}</td>
+                    <td class="py-2.5 px-3 font-extrabold text-navy-900">${row.newSalary.toLocaleString()}</td>
+                    <td class="py-2.5 px-3 text-slate-600">${row.allowance > 0 ? '+' + row.allowance.toLocaleString() : '-'}</td>
+                    <td class="py-2.5 px-3">${row.statusHtml || '<span class="text-slate-300">-</span>'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            updateAgeLookup();
+            renderSalaryChart(chartLabels, chartSalaryData, chartTotalData);
+        }
+
+        // ค้นหาเงินเดือนเมื่ออายุที่ต้องการ
+        function updateAgeLookup() {
+            const targetAge = parseInt(document.getElementById('lookup-age').value) || 40;
+            const resBox = document.getElementById('lookup-result');
+            const matchedRows = lastSimulationRows.filter(r => r.age === targetAge);
+
+            if (matchedRows.length > 0) {
+                const octRow = matchedRows[matchedRows.length - 1];
+                resBox.innerHTML = `
+                    <div class="text-xs text-slate-500">เมื่ออายุ ${targetAge} ปี (อันดับ ${octRow.rank})</div>
+                    <div class="text-lg font-extrabold text-navy-800">เงินเดือน ${octRow.newSalary.toLocaleString()} ฿ <span class="text-xs font-semibold text-emerald-600">(รวมวิทยฐานะ ${octRow.totalIncome.toLocaleString()} ฿/ด.)</span></div>
+                `;
+            } else {
+                resBox.innerHTML = `
+                    <div class="text-xs text-rose-500">กรุณาระบุอายุระหว่างอายุปัจจุบันถึง 60 ปี</div>
+                `;
+            }
+        }
+
+        // วาดกราฟ Chart.js
+        function renderSalaryChart(labels, salaryData, totalData) {
+            const ctx = document.getElementById('salaryChart').getContext('2d');
+            if (salaryChartInstance) {
+                salaryChartInstance.destroy();
+            }
+
+            salaryChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'รายรับรวมต่อเดือน (เงินเดือน + วิทยฐานะ)',
+                            data: totalData,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'เงินเดือนพื้นฐาน (บาท)',
+                            data: salaryData,
+                            borderColor: '#1e3a8a',
+                            backgroundColor: 'rgba(30, 58, 138, 0.15)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { font: { family: 'Prompt', size: 12 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' บาท';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) { return value.toLocaleString() + ' ฿'; },
+                                font: { family: 'Prompt', size: 11 }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { family: 'Prompt', size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ส่งออกข้อมูลตารางจำลองเป็นไฟล์ CSV
+        function exportSimCSV() {
+            if (!lastSimulationRows.length) return;
+            let csvContent = "\uFEFFอายุ(ปี),รอบการเลื่อน,อันดับ,เงินเดือนเดิม,ระดับฐาน,ฐานในการคำนวณ,ร้อยละที่ได้(%),เงินที่ได้เพิ่มจริง,เงินเดือนใหม่,เงินวิทยฐานะและค่าตอบแทน,รายรับรวมต่อเดือน\n";
+            lastSimulationRows.forEach(r => {
+                csvContent += `${r.age},${r.round},${r.rank},${r.oldSalary},${r.tier},${r.base},${r.pct},${r.added},${r.newSalary},${r.allowance},${r.totalIncome}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'แผนจำลองเงินเดือนข้าราชการครู.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ระบบ Toast แจ้งเตือน
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            const toastMsg = document.getElementById('toast-message');
+            if (!toast || !toastMsg) return;
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // คัดลอกผลการคำนวณรอบเดียวสำหรับส่ง LINE
+        function copySingleResult() {
+            const rank = currentSingleRank;
+            const salary = parseFloat(document.getElementById('single-salary').value) || 0;
+            const pct = parseFloat(document.getElementById('single-percent').value) || 0;
+            const baseText = document.getElementById('res-base-used').textContent;
+            const addedText = document.getElementById('res-rounded-inc').textContent;
+            const newSalaryText = document.getElementById('res-new-salary').textContent;
+            const totalText = document.getElementById('res-total-income').textContent;
+            const tierBadge = document.getElementById('res-tier-badge').textContent.trim();
+
+            const text = [
+                `📊 ผลการคำนวณเลื่อนเงินเดือนครู (ก.ค.ศ. ว20)`,
+                `🏷️ อันดับ: ${rank}`,
+                `💰 เงินเดือนเดิม: ${salary.toLocaleString()} บาท`,
+                `📈 ร้อยละที่ได้: ${pct.toFixed(2)}%`,
+                `🎯 ระดับฐาน: ${tierBadge}`,
+                `📏 ฐานที่ใช้คำนวณ: ${baseText}`,
+                `➕ เงินที่ได้เพิ่มจริง: ${addedText} (ปัดเศษหลักสิบ)`,
+                `💵 เงินเดือนใหม่: ${newSalaryText}`,
+                `⭐ ${totalText}`,
+                `--------------------------`,
+                `คำนวณผ่านระบบวางแผนเงินเดือนข้าราชการครู`
+            ].join('\n');
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('คัดลอกสรุปผลส่ง LINE เรียบร้อยแล้ว!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('คัดลอกสรุปผลส่ง LINE เรียบร้อยแล้ว!');
+            });
+        }
+
+        // คัดลอกสรุปผลจำลองเกษียณอายุ 60 ปีสำหรับส่ง LINE
+        function copyFutureSummary() {
+            const finalSalary = document.getElementById('sim-final-salary').textContent;
+            const finalRank = document.getElementById('sim-final-rank').textContent;
+            const finalTotal = document.getElementById('sim-final-total').textContent;
+            const pension = document.getElementById('sim-pension').textContent;
+            const pensionDesc = document.getElementById('sim-pension-desc').textContent;
+            const maxAge = document.getElementById('sim-max-age').textContent;
+
+            const text = [
+                `📈 แผนจำลองความก้าวหน้าเงินเดือน & บำนาญครู (ถึงอายุ 60 ปี)`,
+                `🎖️ ${finalRank}`,
+                `💰 เงินเดือนสุดท้าย ณ เกษียณ: ${finalSalary}`,
+                `💵 รายรับรวมต่อเดือน (รวมวิทยฐานะ): ${finalTotal}`,
+                `🏦 ประมาณการบำนาญ กบข.: ${pension}`,
+                `⏳ ข้อมูล: ${pensionDesc}`,
+                `📊 สถิติเต็มขั้น: ${maxAge}`,
+                `--------------------------`,
+                `คำนวณผ่านระบบวางแผนเงินเดือนข้าราชการครู`
+            ].join('\n');
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('คัดลอกสรุปแผนเกษียณเรียบร้อยแล้ว!');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('คัดลอกสรุปแผนเกษียณเรียบร้อยแล้ว!');
+            });
+        }
+
+        // เริ่มต้นการทำงานเมื่อโหลดหน้าเว็บ
+        window.onload = function() {
+            selectSingleRank('คศ.1');
+            runSimulation();
+        };
+    </script>
+
+    <!-- Toast Notification Element -->
+    <div id="toast-notification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 bg-navy-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-gold-500/30">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-circle-check text-lg"></i>
+        </div>
+        <div id="toast-message" class="text-sm font-medium">คัดลอกข้อความเรียบร้อยแล้ว</div>
+    </div>
+</body>
+</html>

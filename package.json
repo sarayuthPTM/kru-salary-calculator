@@ -1,0 +1,21 @@
+{
+  "name": "thai-teacher-salary-calculator",
+  "version": "1.0.0",
+  "description": "ระบบคำนวณเลื่อนเงินเดือนและวางแผนอนาคตข้าราชการครู (ก.ค.ศ. ว20) จำลองเงินเดือนถึงอายุ 60 ปี และคำนวณบำนาญ",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "start": "npx serve . -l 3000"
+  },
+  "keywords": [
+    "thai-teacher",
+    "salary-calculator",
+    "otepc",
+    "กคศ",
+    "เงินเดือนครู",
+    "บำนาญ",
+    "กบข"
+  ],
+  "author": "กลุ่มบริหารงานบุคคล โรงเรียนกาญจนาภิเษกวิทยาลัย กระบี่",
+  "license": "MIT"
+}
