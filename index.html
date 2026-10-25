@@ -130,6 +130,10 @@
                         <i class="fa-solid fa-receipt text-gold-400"></i>
                         <span>วางแผนภาษีครู</span>
                     </button>
+                    <button onclick="switchTab('tab-debt')" id="btn-tab-debt" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-scale-balanced text-gold-400"></i>
+                        <span>สุขภาพการเงิน & หนี้ 30%</span>
+                    </button>
                     <button onclick="switchTab('tab-ref')" id="btn-tab-ref" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-table"></i>
                         <span>ตารางฐาน & เกณฑ์</span>
@@ -424,47 +428,82 @@
                             </label>
                         </div>
 
-                        <!-- ตั้งค่า กบข. (GPF Simulator Settings) -->
+                        <!-- ตั้งค่า กบข. เสมือนจริง (Real GPF Simulator Settings) -->
                         <div class="pt-3 border-t border-slate-100">
                             <div class="flex items-center justify-between mb-2">
                                 <label class="text-xs font-bold text-navy-800 uppercase tracking-wider flex items-center gap-1.5">
-                                    <i class="fa-solid fa-piggy-bank text-emerald-600"></i> จำลองเงินก้อน กบข.
+                                    <i class="fa-solid fa-piggy-bank text-emerald-600"></i> จำลองเงินก้อน กบข. เสมือนจริง
                                 </label>
-                                <span class="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md font-bold">พ.ร.บ. กบข.</span>
+                                <span class="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md font-bold">พ.ร.บ. กบข. (ออมได้ถึง 30%)</span>
                             </div>
-                            <div class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                            <div class="space-y-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200/80">
                                 <div>
                                     <div class="flex justify-between text-xs text-slate-600 mb-1">
-                                        <span>ยอดเงิน กบข. ยกมาล่าสุด (จากแอป My GPF)</span>
+                                        <span>ยอดเงิน กบข. ล่าสุด (จากแอป My GPF)</span>
                                     </div>
                                     <div class="relative">
                                         <input type="number" id="gpf-current-fund" value="150000" step="5000" min="0" oninput="runSimulation()" class="w-full pl-3 pr-10 py-1.5 rounded-lg border border-slate-300 font-bold text-slate-800 text-xs focus:border-navy-600 outline-none">
                                         <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">บาท</span>
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <span class="text-[11px] text-slate-600 block mb-1">สะสม (% เงินเดือน)</span>
-                                        <select id="gpf-member-pct" onchange="runSimulation()" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white text-navy-800 outline-none">
-                                            <option value="3" selected>3% (มาตรฐาน)</option>
-                                            <option value="5">5% (สะสมเพิ่ม)</option>
-                                            <option value="8">8% (สะสมเพิ่ม)</option>
-                                            <option value="10">10% (สะสมเพิ่ม)</option>
-                                            <option value="15">15% (สะสมเพิ่ม)</option>
-                                            <option value="20">20% (สะสมเพิ่ม)</option>
-                                        </select>
+
+                                <!-- อัตราเงินสะสม 3% - 30% แบบ Slider + Presets -->
+                                <div>
+                                    <div class="flex items-center justify-between text-xs text-slate-700 font-semibold mb-1">
+                                        <span>อัตราสะสมของสมาชิก:</span>
+                                        <div class="flex items-center gap-1">
+                                            <span id="gpf-slider-val-badge" class="px-2 py-0.5 rounded-md bg-navy-800 text-gold-300 font-extrabold text-xs">3%</span>
+                                            <span class="text-[10px] text-slate-500 font-normal">(ออมเพิ่มได้ 0-27%)</span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span class="text-[11px] text-slate-600 block mb-1">ผลตอบแทนเฉลี่ย</span>
-                                        <select id="gpf-return-pct" onchange="runSimulation()" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white text-emerald-700 outline-none">
-                                            <option value="2.5">2.5% (ตราสารหนี้)</option>
-                                            <option value="3.5" selected>3.5% (แผนหลัก)</option>
-                                            <option value="4.5">4.5% (สมดุลอายุ)</option>
-                                            <option value="5.5">5.5% (ตราสารทุน/หุ้น)</option>
-                                        </select>
+                                    <input type="range" id="gpf-member-slider" min="3" max="30" step="1" value="3" oninput="onGpfSliderChange(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-navy-600">
+                                    <input type="hidden" id="gpf-member-pct" value="3">
+                                    
+                                    <!-- ปุ่มลัดเปอร์เซ็นต์ยอดนิยม กบข. -->
+                                    <div class="flex flex-wrap gap-1 mt-2">
+                                        <button type="button" onclick="setGpfMemberPct(3)" class="gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-bold border border-navy-700 bg-navy-700 text-white transition-all">3% มาตรฐาน</button>
+                                        <button type="button" onclick="setGpfMemberPct(5)" class="gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-medium border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-all">+2% (5%)</button>
+                                        <button type="button" onclick="setGpfMemberPct(8)" class="gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-medium border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-all">8%</button>
+                                        <button type="button" onclick="setGpfMemberPct(10)" class="gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-medium border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-all">10%</button>
+                                        <button type="button" onclick="setGpfMemberPct(15)" class="gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-medium border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-all">15%</button>
+                                        <button type="button" onclick="setGpfMemberPct(20)" class="gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-medium border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-all">20%</button>
+                                        <button type="button" onclick="setGpfMemberPct(30)" class="gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-bold border border-gold-400 bg-gold-50 hover:bg-gold-100 text-amber-900 transition-all">30% สูงสุด</button>
+                                    </div>
+                                    <div id="gpf-monthly-deduct-hint" class="text-[11px] text-emerald-800 font-medium bg-emerald-50 px-2 py-1.5 rounded-lg border border-emerald-200/80 mt-2">
+                                        หักสะสมจริง ~645 บ./ด. (สะสมบังคับ 3% + ออมเพิ่ม 0%)
                                     </div>
                                 </div>
-                                <p class="text-[10px] text-slate-500 leading-tight">* รัฐสมทบให้อีก 3% + เงินชดเชย 2% รวม 5% ของเงินเดือนทุกเดือน พร้อมคิดดอกเบี้ยทบต้น</p>
+
+                                <!-- แผนการลงทุนจริงของ กบข. (GPF Investment Plans) -->
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-700 mb-1">
+                                        <i class="fa-solid fa-chart-pie text-navy-600"></i> แผนการลงทุน กบข. (ตามแอป My GPF)
+                                    </label>
+                                    <select id="gpf-plan-select" onchange="onGpfPlanChange()" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white text-navy-800 outline-none">
+                                        <option value="1.8">แผนตลาดเงิน (เสี่ยงต่ำสุด ผลตอบแทน ~1.8%/ปี)</option>
+                                        <option value="2.8">แผนตราสารหนี้ (พันธบัตรรัฐบาล ผลตอบแทน ~2.8%/ปี)</option>
+                                        <option value="3.8">แผนหลัก Core Plan (แผนเริ่มต้นเดิม ผลตอบแทน ~3.8%/ปี)</option>
+                                        <option value="4.8" selected>แผนสมดุลตามอายุ Life Path (ปรับหุ้นตามอายุ แนะนำอันดับ 1 ~4.8%/ปี)</option>
+                                        <option value="5.8">แผนตราสารทุนไทย (หุ้นไทย 100% ผลตอบแทน ~5.8%/ปี)</option>
+                                        <option value="6.8">แผนหุ้นต่างประเทศ (หุ้นทั่วโลก ผลตอบแทน ~6.8%/ปี)</option>
+                                        <option value="custom">กำหนดอัตราผลตอบแทนเอง (Custom DIY)</option>
+                                    </select>
+                                    <input type="hidden" id="gpf-return-pct" value="4.8">
+                                    
+                                    <div id="gpf-custom-rate-box" class="hidden mt-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-slate-600">ระบุผลตอบแทนคาดหวัง:</span>
+                                            <div class="relative w-24">
+                                                <input type="number" id="gpf-custom-return" value="4.8" step="0.1" min="0" max="15" oninput="onGpfCustomRateInput(this.value)" class="w-full pl-2 pr-6 py-1 rounded-md border border-slate-300 text-xs font-bold text-emerald-700 outline-none">
+                                                <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="text-[10px] text-slate-500 leading-tight">
+                                    * รัฐบาลสมทบให้ 3% + ชดเชย 2% รวม 5% ของเงินเดือนทุกเดือน พร้อมคิดดอกเบี้ยทบต้นตลอดอายุราชการ
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -531,6 +570,128 @@
                                 <div class="text-slate-300 text-[11px]">3. ผลประโยชน์การลงทุน + เงินยกมา</div>
                                 <div id="sim-gpf-yield-part" class="text-base font-bold text-emerald-400 mt-1">688,200 ฿</div>
                                 <div class="text-[10px] text-slate-400 mt-0.5">ผลตอบแทนสะสมทบต้น</div>
+                            </div>
+                    </div>
+
+                    <!-- การ์ดพลังแห่งการออมเพิ่ม กบข. (The Power of Extra Saving) -->
+                    <div id="gpf-extra-saving-card" class="bg-gradient-to-r from-amber-500/10 via-gold-500/10 to-emerald-500/10 border border-gold-400/40 rounded-2xl p-4.5 relative overflow-hidden">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-gold-500 text-white flex items-center justify-center text-lg shrink-0 shadow-sm mt-0.5">
+                                    <i class="fa-solid fa-bolt-lightning"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-sm font-bold text-navy-900">พลังแห่งการออมเพิ่ม กบข. (Power of Extra Saving)</h4>
+                                        <span id="gpf-extra-rate-badge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-navy-800 text-gold-300">ออม 3% มาตรฐาน</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600 mt-0.5" id="gpf-extra-desc-text">
+                                        เปรียบเทียบการออมภาคบังคับ 3% vs การออมเพิ่มเพื่อสร้างเงินล้านวันเกษียณ
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-3 bg-white/80 backdrop-blur-sm p-3 rounded-xl border border-gold-300/60 shadow-sm">
+                                <div>
+                                    <div class="text-[10px] text-slate-500">เงินก้อน กบข. งอกเงยเพิ่มขึ้น</div>
+                                    <div id="gpf-compare-diff-badge" class="text-base sm:text-lg font-black text-emerald-700">+0 ฿</div>
+                                </div>
+                                <div class="border-l border-slate-200 pl-3">
+                                    <div class="text-[10px] text-slate-500">ประหยัดภาษีได้อีกปีละประมาณ</div>
+                                    <div id="gpf-compare-tax-save" class="text-sm sm:text-base font-bold text-navy-800">~0 ฿/ปี</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- วิเคราะห์เปรียบเทียบ บำเหน็จ VS บำนาญ + เงินก้อน กบข. -->
+                    <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-navy-100 text-navy-700 flex items-center justify-center text-sm font-bold">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-navy-900">วิเคราะห์เปรียบเทียบ: รับ "บำเหน็จ" VS "บำนาญ + กบข."</h4>
+                                    <p class="text-[11px] text-slate-500">จุดคุ้มทุนและความคุ้มค่าตลอดช่วงชีวิตหลังเกษียณ</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                                <i class="fa-solid fa-award"></i> แนะนำ: รับบำนาญคุ้มค่ากว่า
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- บำเหน็จ -->
+                            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-xs font-bold text-slate-700">1. กรณีเลือกรับ "บำเหน็จ" (เงินก้อนก้อนเดียวจบ)</span>
+                                    <span class="text-[10px] text-rose-600 font-semibold bg-rose-50 px-2 py-0.5 rounded border border-rose-200">ขาดสิทธิรักษา</span>
+                                </div>
+                                <div class="text-xl font-black text-slate-800 mb-1" id="res-lump-sum-total">0 ฿</div>
+                                <div class="space-y-1 text-[11px] text-slate-600">
+                                    <div>• สูตร: เงินเดือนสุดท้าย × เวลาราชการ = <span id="res-lump-gov-part" class="font-semibold text-slate-800">0 ฿</span></div>
+                                    <div>• เงิน กบข. ที่ได้: ได้เฉพาะเงินสะสม + เงินสมทบ 3% + ผลประโยชน์</div>
+                                    <div class="text-rose-600 font-semibold">• ⚠️ เสียสิทธิ: ไม่ได้รับเงินชดเชย 2% และ <b>หมดสิทธิเบิกจ่ายตรงค่ารักษาพยาบาลตลอดชีพ</b></div>
+                                </div>
+                            </div>
+
+                            <!-- บำนาญ + กบข. -->
+                            <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-xs font-bold text-emerald-900">2. กรณีเลือกรับ "บำนาญ" (เงินรายเดือน + ก้อน กบข.)</span>
+                                    <span class="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">สิทธิจ่ายตรงตลอดชีพ</span>
+                                </div>
+                                <div class="text-xl font-black text-navy-900 mb-1">
+                                    <span id="res-pension-monthly-val">0 ฿</span> <span class="text-xs font-semibold text-slate-600">/เดือน + ก้อน กบข.</span>
+                                </div>
+                                <div class="space-y-1 text-[11px] text-slate-700">
+                                    <div>• ได้เงินก้อน กบข. ครบถ้วน 100% (รวมเงินชดเชย 2% จากรัฐ): <b id="res-pension-gpf-lump" class="text-emerald-700">0 ฿</b></div>
+                                    <div>• ได้รับเงินบำนาญเข้าบัญชีทุกเดือนตลอดชีพ</div>
+                                    <div class="text-emerald-800 font-bold">• 🎯 <b>จุดคุ้มทุน (Crossover):</b> รับบำนาญเพียง <span id="res-crossover-years" class="text-navy-900 font-black">6.5 ปี</span> (อายุ <span id="res-crossover-age" class="text-navy-900 font-black">67 ปี</span>) ยอดเงินรวมจะแซงหน้าบำเหน็จทันที!</div>
+                                    <div class="text-emerald-800 font-semibold">• 🏥 <b>รักษาพยาบาล:</b> ใช้สิทธิจ่ายตรงกรมบัญชีกลางได้ตลอดชีพทั้งตนเอง คู่สมรส บิดามารดา และบุตร</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- สวัสดิการมรดกเพื่อครอบครัวครู (ช.พ.ค. / ช.พ.ส. & บำเหน็จตกทอด) -->
+                    <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg border border-slate-800">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-gold-400/20 text-gold-400 flex items-center justify-center text-sm font-bold">
+                                    <i class="fa-solid fa-shield-heart"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white">หลักประกันและมรดกเพื่อครอบครัวครู (Family Legacy & Welfare)</h4>
+                                    <p class="text-[11px] text-slate-400">สรุปยอดเงินสงเคราะห์ที่ทายาทจะได้รับกรณีสมาชิกถึงแก่กรรม</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] text-slate-400">ประมาณการมรดกรวมส่งต่อทายาท</div>
+                                <div id="res-legacy-total" class="text-xl sm:text-2xl font-black text-gold-400">~2,750,000 ฿</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700/60">
+                                <div class="text-slate-400 text-[11px]">1. บำเหน็จตกทอด</div>
+                                <div id="res-legacy-pension-30x" class="text-sm font-bold text-white mt-1">~1,374,000 ฿</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">บำนาญ × 30 เท่า (ตาม กม.)</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700/60">
+                                <div class="text-slate-400 text-[11px]">2. ฌาปนกิจ ช.พ.ค.</div>
+                                <div class="text-sm font-bold text-white mt-1">~950,000 ฿</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">เงินสงเคราะห์ครอบครัวครู</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700/60">
+                                <div class="text-slate-400 text-[11px]">3. ฌาปนกิจ ช.พ.ส.</div>
+                                <div class="text-sm font-bold text-white mt-1">~380,000 ฿</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">เงินสงเคราะห์คู่สมรส</div>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700/60">
+                                <div class="text-slate-400 text-[11px]">4. เงินช่วยพิเศษ</div>
+                                <div id="res-legacy-special-help" class="text-sm font-bold text-gold-400 mt-1">~207,000 ฿</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">เงินเดือนสุดท้าย × 3 เท่า</div>
                             </div>
                         </div>
                     </div>
@@ -1170,6 +1331,185 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 6: ตรวจสุขภาพการเงิน & หนี้ 30% (เกณฑ์ ศธ.)
+             ========================================== -->
+        <section id="tab-debt" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Left Column: Inputs รายรับ & ภาระหนี้ -->
+                <div class="lg:col-span-5 bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                        <div>
+                            <h2 class="text-lg font-bold text-navy-800 flex items-center gap-2">
+                                <i class="fa-solid fa-scale-balanced text-gold-500"></i> สุขภาพการเงิน & หนี้สิน
+                            </h2>
+                            <span class="text-xs text-slate-500">เกณฑ์กระทรวงศึกษาธิการ & สหกรณ์ครู</span>
+                        </div>
+                        <button type="button" onclick="syncDebtFromSalary()" class="text-xs bg-navy-50 hover:bg-navy-100 text-navy-700 px-3 py-1.5 rounded-xl font-bold border border-navy-200 transition-all flex items-center gap-1 active:scale-95 shadow-sm">
+                            <i class="fa-solid fa-arrows-rotate text-navy-600"></i> ดึงเงินเดือนอัตโนมัติ
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- รายรับต่อเดือน -->
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-3">
+                            <span class="text-xs font-bold text-navy-900 block border-b border-slate-200 pb-1.5">
+                                <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> 1. รายรับประจำต่อเดือน (บาท)
+                            </span>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">เงินเดือนปัจจุบัน</label>
+                                <input type="number" id="debt-salary" value="35000" step="500" min="15000" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-800 text-sm outline-none focus:border-navy-600">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">วิทยฐานะ+ตอบแทน</label>
+                                    <input type="number" id="debt-allowance" value="3500" step="100" min="0" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-800 text-sm outline-none focus:border-navy-600">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">รายรับประจำอื่นๆ</label>
+                                    <input type="number" id="debt-other-income" value="0" step="500" min="0" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-800 text-sm outline-none focus:border-navy-600">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- รายการหักหนี้และภาระผูกพัน -->
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-3">
+                            <span class="text-xs font-bold text-rose-800 block border-b border-slate-200 pb-1.5">
+                                <i class="fa-solid fa-file-invoice-dollar text-rose-600"></i> 2. รายการหักเงินเดือน & หนี้สิน (บาท/เดือน)
+                            </span>
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-[11px] font-semibold text-slate-600">สหกรณ์ออมทรัพย์ครู (ค่าหุ้น + งวดเงินกู้)</label>
+                                    <span class="text-[10px] text-slate-400">หักหน้าสลิป</span>
+                                </div>
+                                <input type="number" id="debt-coop" value="12000" step="500" min="0" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-rose-700 text-sm outline-none focus:border-navy-600">
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-[11px] font-semibold text-slate-600">สินเชื่อธนาคาร (กรุงไทย / ออมสิน / ธอส.)</label>
+                                    <span class="text-[10px] text-slate-400">สินเชื่อสวัสดิการ</span>
+                                </div>
+                                <input type="number" id="debt-bank" value="8500" step="500" min="0" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-rose-700 text-sm outline-none focus:border-navy-600">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">สะสม กบข. (ตามที่เลือก)</label>
+                                    <input type="number" id="debt-gpf" value="1050" step="50" min="0" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-700 text-sm outline-none focus:border-navy-600">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">ฌาปนกิจ ช.พ.ค./ช.พ.ส.</label>
+                                    <input type="number" id="debt-chpk" value="1200" step="100" min="0" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-700 text-sm outline-none focus:border-navy-600">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">หนี้บัตรเครดิต / สินเชื่อส่วนบุคคล / อื่นๆ</label>
+                                <input type="number" id="debt-other" value="0" step="500" min="0" oninput="calculateDebt()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-700 text-sm outline-none focus:border-navy-600">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Results & Gauge Indicator -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    <!-- Status Header Card -->
+                    <div id="debt-status-card" class="rounded-2xl p-6 card-shadow border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 transition-all">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/60 pb-4 mb-4">
+                            <div>
+                                <span id="debt-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                    <i class="fa-solid fa-circle-check"></i> ปลอดภัย (ผ่านเกณฑ์ ศธ.)
+                                </span>
+                                <h3 class="text-xl font-bold text-navy-900 mt-2">สัดส่วนเงินเดือนสุทธิคงเหลือจ่าย</h3>
+                            </div>
+                            <div class="text-left sm:text-right">
+                                <div class="text-xs text-slate-500">คงเหลือจ่ายสุทธิ</div>
+                                <div id="debt-takehome-pct" class="text-3xl sm:text-4xl font-black text-emerald-700">43.5%</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar with 30% Marker -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-semibold mb-1.5">
+                                <span class="text-slate-600">แถบวัดสภาพคล่องเงินเดือนคงเหลือ</span>
+                                <span class="text-navy-700">เกณฑ์ขั้นต่ำ ศธ.: <b>ไม่น้อยกว่า 30%</b></span>
+                            </div>
+                            <div class="relative w-full h-5 bg-slate-200 rounded-full overflow-hidden p-0.5">
+                                <div id="debt-gauge-bar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 43.5%;"></div>
+                                <!-- 30% Marker Line -->
+                                <div class="absolute top-0 bottom-0 left-[30%] w-1 bg-red-600 shadow-sm z-10" title="จุดตัดเกณฑ์ ศธ. 30%"></div>
+                            </div>
+                            <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                                <span>0%</span>
+                                <span class="text-rose-600 font-bold ml-6">เส้น 30% (เกณฑ์ ศธ.)</span>
+                                <span>50%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+
+                        <div id="debt-status-desc" class="p-3 rounded-xl bg-white/80 border border-emerald-200 text-xs text-emerald-900 font-medium leading-relaxed">
+                            🎉 <b>ยอดเยี่ยมมาก:</b> ขณะนี้คุณครูมีเงินเดือนเหลือสุทธิ <b>43.5%</b> ซึ่งสูงกว่าเกณฑ์ขั้นต่ำ 30% ตามระเบียบกระทรวงศึกษาธิการ สภาพคล่องทางการเงินแข็งแรงและปลอดภัย
+                        </div>
+                    </div>
+
+                    <!-- Financial Summary Breakdown Table -->
+                    <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100">
+                        <h4 class="text-sm font-bold text-navy-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-navy-600"></i> สรุปตัวเลขรายรับและภาระหนี้สินสุทธิ
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                <div class="text-[11px] text-slate-500">รายรับรวมทั้งหมด</div>
+                                <div id="debt-disp-income" class="text-lg font-bold text-navy-900 mt-1">38,500 ฿</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-rose-50 border border-rose-200">
+                                <div class="text-[11px] text-rose-600">ภาระหนี้สินรวม/เดือน</div>
+                                <div id="debt-disp-deductions" class="text-lg font-bold text-rose-700 mt-1">21,750 ฿</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                                <div class="text-[11px] text-emerald-600">เงินเหลือจ่ายสุทธิ/เดือน</div>
+                                <div id="debt-disp-net" class="text-lg font-bold text-emerald-800 mt-1">16,750 ฿</div>
+                            </div>
+                        </div>
+
+                        <!-- วงเงินที่กู้เพิ่มได้สูงสุด -->
+                        <div class="mt-4 p-3.5 rounded-xl bg-navy-50/70 border border-navy-100 flex items-center justify-between text-xs">
+                            <div>
+                                <span class="text-slate-600 block">วงเงินค่างวดที่สามารถกู้เพิ่มได้สูงสุด (โดยยังเหลือเงินเกิน 30%):</span>
+                                <span id="debt-max-borrowable-text" class="text-[11px] text-slate-500">คำนวณตามเพดานหนี้สูงสุด 70%</span>
+                            </div>
+                            <div id="debt-max-borrowable-val" class="text-base font-bold text-navy-800">~5,200 บ./ด.</div>
+                        </div>
+                    </div>
+
+                    <!-- แนวทางการแก้ไขและบริหารหนี้สินครู -->
+                    <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-sm font-bold text-navy-900 flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-gold-500"></i> แนวทางและมาตรการแก้ปัญหาหนี้สินครู (ศธ.)
+                            </h4>
+                            <button type="button" onclick="copyDebtSummary()" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-300 transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+                                <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุปสุขภาพการเงินส่ง LINE
+                            </button>
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="flex items-start gap-2">
+                                <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✓</span>
+                                <span><b>เกณฑ์เงินเดือนเหลือ 30%:</b> นโยบาย ศธ. มุ่งเน้นให้ครูมีเงินเดือนเหลือดำรงชีพอย่างมีศักดิ์ศรี หากเงินเดือนเหลือต่ำกว่า 30% สหกรณ์และสถาบันการเงินจะไม่สามารถอนุมัติเงินกู้เพิ่มได้</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✓</span>
+                                <span><b>การรวมหนี้ (Debt Consolidation):</b> หากมีหนี้ดอกเบี้ยสูงภายนอก ให้รวมหนี้มาไว้ที่สหกรณ์ออมทรัพย์ครูหรือสินเชื่อรวมหนี้ดอกเบี้ยต่ำของธนาคารออมสิน/กรุงไทย เพื่อลดภาระค่างวดรายเดือน</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✓</span>
+                                <span><b>การขยายงวดชำระถึงอายุ 75 ปี:</b> หลายสหกรณ์มีมาตรการยืดระยะเวลาผ่อนชำระเพื่อลดค่างวดให้ต่ำลง ช่วยให้เงินเดือนคงเหลือกลับมาเกิน 30%</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
             </div>
         </section>
@@ -1318,6 +1658,10 @@
                 runSimulation();
             } else if (tabId === 'tab-pa') {
                 calculatePA();
+            } else if (tabId === 'tab-tax') {
+                calculateTax();
+            } else if (tabId === 'tab-debt') {
+                calculateDebt();
             }
         }
 
@@ -1492,6 +1836,63 @@
             runSimulation();
         }
 
+        // ควบคุมตัวเลือก กบข. เสมือนจริง
+        function onGpfSliderChange(val) {
+            const pct = parseInt(val) || 3;
+            const badge = document.getElementById('gpf-slider-val-badge');
+            if (badge) badge.textContent = `${pct}%`;
+            const hidden = document.getElementById('gpf-member-pct');
+            if (hidden) hidden.value = pct;
+            
+            // อัปเดตสไตล์ปุ่ม Preset
+            document.querySelectorAll('.gpf-preset-btn').forEach(btn => {
+                const text = btn.textContent;
+                const match = (pct === 3 && text.includes('3%')) ||
+                              (pct === 5 && text.includes('5%')) ||
+                              (pct === 8 && text.includes('8%')) ||
+                              (pct === 10 && text.includes('10%')) ||
+                              (pct === 15 && text.includes('15%')) ||
+                              (pct === 20 && text.includes('20%')) ||
+                              (pct === 30 && text.includes('30%'));
+                if (match) {
+                    btn.className = 'gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-bold border border-navy-700 bg-navy-700 text-white transition-all';
+                } else {
+                    btn.className = 'gpf-preset-btn px-2 py-0.5 rounded-md text-[11px] font-medium border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-all';
+                }
+            });
+
+            runSimulation();
+        }
+
+        function setGpfMemberPct(pct) {
+            const slider = document.getElementById('gpf-member-slider');
+            if (slider) slider.value = pct;
+            onGpfSliderChange(pct);
+        }
+
+        function onGpfPlanChange() {
+            const planSelect = document.getElementById('gpf-plan-select');
+            const customBox = document.getElementById('gpf-custom-rate-box');
+            const returnPctInput = document.getElementById('gpf-return-pct');
+            if (!planSelect) return;
+
+            if (planSelect.value === 'custom') {
+                if (customBox) customBox.classList.remove('hidden');
+                const customVal = parseFloat(document.getElementById('gpf-custom-return')?.value) || 4.8;
+                if (returnPctInput) returnPctInput.value = customVal;
+            } else {
+                if (customBox) customBox.classList.add('hidden');
+                if (returnPctInput) returnPctInput.value = planSelect.value;
+            }
+            runSimulation();
+        }
+
+        function onGpfCustomRateInput(val) {
+            const returnPctInput = document.getElementById('gpf-return-pct');
+            if (returnPctInput) returnPctInput.value = parseFloat(val) || 4.8;
+            runSimulation();
+        }
+
         function runSimulation() {
             const startAge = Math.min(59, Math.max(20, parseInt(document.getElementById('sim-age').value) || 28));
             const startService = Math.max(0, parseInt(document.getElementById('sim-service').value) || 3);
@@ -1512,12 +1913,15 @@
             const gpfMemberPctEl = document.getElementById('gpf-member-pct');
             const gpfMemberPct = gpfMemberPctEl ? parseFloat(gpfMemberPctEl.value) || 3 : 3;
             const gpfReturnPctEl = document.getElementById('gpf-return-pct');
-            const gpfReturnPct = gpfReturnPctEl ? parseFloat(gpfReturnPctEl.value) || 3.5 : 3.5;
+            const gpfReturnPct = gpfReturnPctEl ? parseFloat(gpfReturnPctEl.value) || 4.8 : 4.8;
             const gpfGovPct = 5.0; // 3% รัฐสมทบ + 2% รัฐชดเชย
 
             let gpfBalance = gpfInitial;
             let totalMemberSaved = 0;
             let totalGovContributed = 0;
+
+            // คำนวณ Baseline 3% ควบคู่เพื่อเปรียบเทียบ "พลังการออมเพิ่ม"
+            let gpfBaseBalance = gpfInitial;
             const monthlyReturnRate = Math.pow(1 + (gpfReturnPct / 100), 1 / 12) - 1;
 
             lastSimulationRows = [];
@@ -1583,10 +1987,15 @@
                     const govMonthAdd = nextSalary * (gpfGovPct / 100);
                     const totalMonthAdd = memberMonthAdd + govMonthAdd;
 
+                    const baseMemberMonthAdd = nextSalary * 0.03;
+                    const baseTotalMonthAdd = baseMemberMonthAdd + govMonthAdd;
+
                     for (let m = 0; m < 6; m++) {
                         gpfBalance = (gpfBalance + totalMonthAdd) * (1 + monthlyReturnRate);
                         totalMemberSaved += memberMonthAdd;
                         totalGovContributed += govMonthAdd;
+
+                        gpfBaseBalance = (gpfBaseBalance + baseTotalMonthAdd) * (1 + monthlyReturnRate);
                     }
 
                     lastSimulationRows.push({
@@ -1656,6 +2065,84 @@
 
             const comboEl = document.getElementById('sim-gpf-pension-combo');
             if (comboEl) comboEl.textContent = `บำนาญ ${estimatedPension.toLocaleString()} บ./ด. + เงินก้อน กบข.`;
+
+            // อัปเดตข้อความหักสะสมจริงต่อเดือนในปัจจุบัน
+            const currentCurSalary = parseFloat(document.getElementById('sim-salary').value) || 20000;
+            const curDeduct = Math.round(currentCurSalary * (gpfMemberPct / 100));
+            const curMandatory = Math.round(currentCurSalary * 0.03);
+            const curExtra = Math.max(0, curDeduct - curMandatory);
+            const hintEl = document.getElementById('gpf-monthly-deduct-hint');
+            if (hintEl) {
+                hintEl.innerHTML = `หักสะสมจริง <b>~${curDeduct.toLocaleString()} บ./ด.</b> (สะสมบังคับ 3% = ${curMandatory.toLocaleString()} บ. ${curExtra > 0 ? `+ ออมเพิ่ม ${(gpfMemberPct - 3)}% = <b>${curExtra.toLocaleString()} บ.</b>` : '+ ไม่ได้ออมเพิ่ม'})`;
+            }
+
+            // อัปเดตการ์ดพลังแห่งการออมเพิ่ม กบข.
+            const extraDiff = Math.max(0, Math.round(gpfBalance - gpfBaseBalance));
+            const extraRateBadge = document.getElementById('gpf-extra-rate-badge');
+            if (extraRateBadge) {
+                extraRateBadge.textContent = gpfMemberPct > 3 ? `ออมเพิ่ม +${gpfMemberPct - 3}% (รวม ${gpfMemberPct}%)` : `ออม 3% มาตรฐาน`;
+                extraRateBadge.className = gpfMemberPct > 3 
+                    ? 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-700 text-white animate-pulse' 
+                    : 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-navy-800 text-gold-300';
+            }
+            const extraDesc = document.getElementById('gpf-extra-desc-text');
+            if (extraDesc) {
+                if (gpfMemberPct > 3) {
+                    extraDesc.innerHTML = `คุณครูเลือกออมเพิ่มอีก <b>${gpfMemberPct - 3}%</b> ต่อเดือน ทำให้มีเงินสะสมงอกเงยทบต้นมหาศาลเมื่ออายุ 60 ปี`;
+                } else {
+                    extraDesc.textContent = `เปรียบเทียบการออมภาคบังคับ 3% vs การออมเพิ่มเพื่อสร้างเงินล้านวันเกษียณ (เลื่อน Slider เพื่อดูพลังการออมเพิ่ม)`;
+                }
+            }
+            const compareDiffEl = document.getElementById('gpf-compare-diff-badge');
+            if (compareDiffEl) {
+                compareDiffEl.textContent = extraDiff > 0 ? `+${extraDiff.toLocaleString()} ฿` : '0 ฿ (เกณฑ์ปกติ)';
+            }
+            // ภาษีที่ประหยัดได้ประมาณการ (อัตราภาษีเฉลี่ยครู ~5%)
+            const annualExtraSave = (currentCurSalary * 12) * ((gpfMemberPct - 3) / 100);
+            const taxSavedPerYear = Math.round(annualExtraSave * 0.05);
+            const compareTaxEl = document.getElementById('gpf-compare-tax-save');
+            if (compareTaxEl) {
+                compareTaxEl.textContent = gpfMemberPct > 3 ? `~${taxSavedPerYear.toLocaleString()} ฿/ปี` : '0 ฿/ปี';
+            }
+
+            // คำนวณเปรียบเทียบ บำเหน็จ VS บำนาญ
+            const govLumpSum = finalRow.newSalary * totalServiceYears;
+            const gpfLumpSumWithoutComp = Math.round(totalMemberPart + (totalGovPart * (3 / 5)) + (totalYieldAndInitial * 0.85));
+            const totalLumpSum = govLumpSum + gpfLumpSumWithoutComp;
+
+            const resLumpSumEl = document.getElementById('res-lump-sum-total');
+            if (resLumpSumEl) resLumpSumEl.textContent = `${totalLumpSum.toLocaleString()} ฿`;
+            const resLumpGovPartEl = document.getElementById('res-lump-gov-part');
+            if (resLumpGovPartEl) resLumpGovPartEl.textContent = `${govLumpSum.toLocaleString()} ฿`;
+
+            const resPensionMonthlyEl = document.getElementById('res-pension-monthly-val');
+            if (resPensionMonthlyEl) resPensionMonthlyEl.textContent = `${estimatedPension.toLocaleString()} ฿`;
+            const resPensionGpfEl = document.getElementById('res-pension-gpf-lump');
+            if (resPensionGpfEl) resPensionGpfEl.textContent = `${totalGpfLumpSum.toLocaleString()} ฿`;
+
+            // จุดคุ้มทุน Crossover Age
+            const crossoverMonths = Math.max(1, Math.round((totalLumpSum - totalGpfLumpSum) / Math.max(1, estimatedPension)));
+            const crossoverYears = Math.round((crossoverMonths / 12) * 10) / 10;
+            const crossoverAge = Math.round(60 + crossoverYears);
+
+            const crossoverYearsEl = document.getElementById('res-crossover-years');
+            if (crossoverYearsEl) crossoverYearsEl.textContent = `${crossoverYears} ปี`;
+            const crossoverAgeEl = document.getElementById('res-crossover-age');
+            if (crossoverAgeEl) crossoverAgeEl.textContent = `อายุ ${crossoverAge} ปี`;
+
+            // สวัสดิการมรดกเพื่อครอบครัวครู
+            const pension30x = estimatedPension * 30;
+            const specialHelp = finalRow.newSalary * 3;
+            const chpk = 950000;
+            const chps = 380000;
+            const totalLegacy = pension30x + chpk + chps + specialHelp;
+
+            const legacy30xEl = document.getElementById('res-legacy-pension-30x');
+            if (legacy30xEl) legacy30xEl.textContent = `~${pension30x.toLocaleString()} ฿`;
+            const legacySpecialEl = document.getElementById('res-legacy-special-help');
+            if (legacySpecialEl) legacySpecialEl.textContent = `~${specialHelp.toLocaleString()} ฿`;
+            const legacyTotalEl = document.getElementById('res-legacy-total');
+            if (legacyTotalEl) legacyTotalEl.textContent = `~${totalLegacy.toLocaleString()} ฿`;
 
             if (firstMaxAge) {
                 document.getElementById('sim-max-age').textContent = `อายุ ${firstMaxAge} ปี`;
@@ -2224,9 +2711,146 @@
             ].join('\n');
 
             navigator.clipboard.writeText(text).then(() => {
-                showToast('คัดลอกสรุปภาษีส่ง LINE เรียบร้อยแล้ว!');
+                showToast('คัดลอกสรุปวางแผนภาษีเรียบร้อยแล้ว');
             }).catch(() => {
-                showToast('คัดลอกสรุปภาษีส่ง LINE เรียบร้อยแล้ว!');
+                showToast('ไม่สามารถคัดลอกได้ กรุณาลองใหม่');
+            });
+        }
+
+        // ==========================================
+        // TAB 6: ตรวจสุขภาพการเงิน & หนี้ 30% (เกณฑ์ ศธ.)
+        // ==========================================
+        function syncDebtFromSalary() {
+            const currentSalary = parseFloat(document.getElementById('single-salary')?.value) || 35000;
+            const details = getCalculationDetails(currentSingleRank, currentSalary, true);
+            const gpfPct = parseFloat(document.getElementById('gpf-member-pct')?.value) || 3;
+
+            if (document.getElementById('debt-salary')) document.getElementById('debt-salary').value = currentSalary;
+            if (document.getElementById('debt-allowance')) document.getElementById('debt-allowance').value = details.allowance;
+            if (document.getElementById('debt-gpf')) document.getElementById('debt-gpf').value = Math.round(currentSalary * (gpfPct / 100));
+
+            calculateDebt();
+            showToast('ดึงข้อมูลเงินเดือนและวิทยฐานะปัจจุบันเรียบร้อยแล้ว');
+        }
+
+        function calculateDebt() {
+            const salary = parseFloat(document.getElementById('debt-salary')?.value) || 0;
+            const allowance = parseFloat(document.getElementById('debt-allowance')?.value) || 0;
+            const otherIncome = parseFloat(document.getElementById('debt-other-income')?.value) || 0;
+            const totalIncome = salary + allowance + otherIncome;
+
+            const coop = parseFloat(document.getElementById('debt-coop')?.value) || 0;
+            const bank = parseFloat(document.getElementById('debt-bank')?.value) || 0;
+            const gpf = parseFloat(document.getElementById('debt-gpf')?.value) || 0;
+            const chpk = parseFloat(document.getElementById('debt-chpk')?.value) || 0;
+            const otherDebt = parseFloat(document.getElementById('debt-other')?.value) || 0;
+            const totalDeductions = coop + bank + gpf + chpk + otherDebt;
+
+            const netSalary = Math.max(0, totalIncome - totalDeductions);
+            const takeHomePct = totalIncome > 0 ? (netSalary / totalIncome) * 100 : 0;
+
+            // อัปเดตตัวเลข
+            const dispIncome = document.getElementById('debt-disp-income');
+            if (dispIncome) dispIncome.textContent = `${Math.round(totalIncome).toLocaleString()} ฿`;
+            const dispDeduct = document.getElementById('debt-disp-deductions');
+            if (dispDeduct) dispDeduct.textContent = `${Math.round(totalDeductions).toLocaleString()} ฿`;
+            const dispNet = document.getElementById('debt-disp-net');
+            if (dispNet) dispNet.textContent = `${Math.round(netSalary).toLocaleString()} ฿`;
+            const dispPct = document.getElementById('debt-takehome-pct');
+            if (dispPct) dispPct.textContent = `${takeHomePct.toFixed(1)}%`;
+
+            // อัปเดตแถบวัด
+            const gaugeBar = document.getElementById('debt-gauge-bar');
+            if (gaugeBar) {
+                gaugeBar.style.width = `${Math.min(100, Math.max(0, takeHomePct))}%`;
+            }
+
+            // คำนวณวงเงินที่สามารถกู้เพิ่มได้สูงสุด (เพดานหนี้ 70% ของรายรับรวม)
+            const maxAllowedDebt = totalIncome * 0.70;
+            const remainingBorrowableMargin = Math.max(0, maxAllowedDebt - totalDeductions);
+            const maxBorrowVal = document.getElementById('debt-max-borrowable-val');
+            const maxBorrowText = document.getElementById('debt-max-borrowable-text');
+
+            if (maxBorrowVal) {
+                if (remainingBorrowableMargin > 0) {
+                    maxBorrowVal.textContent = `~${Math.round(remainingBorrowableMargin).toLocaleString()} บ./ด.`;
+                    maxBorrowVal.className = 'text-base font-bold text-emerald-700';
+                    if (maxBorrowText) maxBorrowText.textContent = 'วงเงินค่างวดที่ยังสามารถกู้เพิ่มได้ โดยเงินเดือนยังเหลือเกิน 30%';
+                } else {
+                    const excess = totalDeductions - maxAllowedDebt;
+                    maxBorrowVal.textContent = `เกินเพดาน ~${Math.round(excess).toLocaleString()} บ./ด.`;
+                    maxBorrowVal.className = 'text-base font-bold text-rose-600';
+                    if (maxBorrowText) maxBorrowText.textContent = 'ภาระหนี้สินปัจจุบันเกินเพดาน 70% ตามเกณฑ์ ศธ.';
+                }
+            }
+
+            // ประเมินระดับความเสี่ยง
+            const statusCard = document.getElementById('debt-status-card');
+            const statusBadge = document.getElementById('debt-status-badge');
+            const statusDesc = document.getElementById('debt-status-desc');
+
+            if (takeHomePct >= 35) {
+                // ปลอดภัยเขียว
+                if (statusCard) statusCard.className = 'rounded-2xl p-6 card-shadow border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 transition-all';
+                if (statusBadge) {
+                    statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300';
+                    statusBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> ปลอดภัย (ผ่านเกณฑ์ ศธ.)';
+                }
+                if (gaugeBar) gaugeBar.className = 'h-full rounded-full bg-emerald-500 transition-all duration-500';
+                if (statusDesc) {
+                    statusDesc.className = 'p-3 rounded-xl bg-white/80 border border-emerald-200 text-xs text-emerald-900 font-medium leading-relaxed';
+                    statusDesc.innerHTML = `🎉 <b>ยอดเยี่ยมมาก:</b> ขณะนี้คุณครูมีเงินเดือนเหลือสุทธิ <b>${takeHomePct.toFixed(1)}%</b> ซึ่งสูงกว่าเกณฑ์ขั้นต่ำ 30% ตามระเบียบกระทรวงศึกษาธิการ สภาพคล่องทางการเงินแข็งแรงและปลอดภัย สามารถออมเพิ่มใน กบข. หรือลงทุนเพิ่มเติมได้`;
+                }
+            } else if (takeHomePct >= 30) {
+                // เฝ้าระวังเหลือง
+                if (statusCard) statusCard.className = 'rounded-2xl p-6 card-shadow border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-gold-50 transition-all';
+                if (statusBadge) {
+                    statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300';
+                    statusBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> เฝ้าระวัง (ใกล้เกณฑ์ 30%)';
+                }
+                if (gaugeBar) gaugeBar.className = 'h-full rounded-full bg-amber-500 transition-all duration-500';
+                if (statusDesc) {
+                    statusDesc.className = 'p-3 rounded-xl bg-white/80 border border-amber-200 text-xs text-amber-900 font-medium leading-relaxed';
+                    statusDesc.innerHTML = `⚠️ <b>ควรระมัดระวัง:</b> เงินเดือนเหลือสุทธิ <b>${takeHomePct.toFixed(1)}%</b> ใกล้แตะเกณฑ์ขั้นต่ำ 30% ของกระทรวงศึกษาธิการ แนะนำให้ชะลอการกู้เพิ่ม และควบคุมค่าใช้จ่ายให้รัดกุม`;
+                }
+            } else {
+                // วิกฤตแดง
+                if (statusCard) statusCard.className = 'rounded-2xl p-6 card-shadow border-2 border-rose-300 bg-gradient-to-br from-rose-50 via-white to-red-50 transition-all';
+                if (statusBadge) {
+                    statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-rose-100 text-rose-800 border border-rose-300';
+                    statusBadge.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> วิกฤต (ต่ำกว่าเกณฑ์ ศธ.)';
+                }
+                if (gaugeBar) gaugeBar.className = 'h-full rounded-full bg-rose-600 transition-all duration-500';
+                if (statusDesc) {
+                    statusDesc.className = 'p-3 rounded-xl bg-white/90 border border-rose-300 text-xs text-rose-900 font-semibold leading-relaxed';
+                    statusDesc.innerHTML = `🚨 <b>ต่ำกว่าเกณฑ์ ศธ.:</b> เงินเดือนเหลือสุทธิเพียง <b>${takeHomePct.toFixed(1)}%</b> (น้อยกว่า 30%) ผิดเกณฑ์ระเบียบ ศธ. และสหกรณ์จะไม่สามารถอนุมัติเงินกู้ใหม่ได้ แนะนำให้เข้าร่วมโครงการปรับโครงสร้างหนี้/รวมหนี้ดอกเบี้ยต่ำของเขตพื้นที่และสหกรณ์ครูโดยด่วน`;
+                }
+            }
+            saveFormData();
+        }
+
+        function copyDebtSummary() {
+            const income = document.getElementById('debt-disp-income').textContent;
+            const deductions = document.getElementById('debt-disp-deductions').textContent;
+            const net = document.getElementById('debt-disp-net').textContent;
+            const pct = document.getElementById('debt-takehome-pct').textContent;
+            const badge = document.getElementById('debt-status-badge').textContent.trim();
+
+            const text = [
+                `⚖️ สรุปผลการตรวจสุขภาพการเงิน & ภาระหนี้สินครู (เกณฑ์ ศธ. 30%)`,
+                `💵 รายรับรวม: ${income}`,
+                `💳 หนี้สินและยอดหักรายเดือน: ${deductions}`,
+                `💰 เงินเดือนคงเหลือสุทธิ: ${net}`,
+                `📊 สัดส่วนคงเหลือจ่าย: ${pct}`,
+                `📌 สถานะ: ${badge}`,
+                `--------------------------`,
+                `ตรวจสุขภาพการเงินผ่านระบบวางแผนการเงินข้าราชการครู`
+            ].join('\n');
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('คัดลอกสรุปสุขภาพการเงินส่ง LINE เรียบร้อยแล้ว!');
+            }).catch(() => {
+                showToast('คัดลอกสรุปสุขภาพการเงินส่ง LINE เรียบร้อยแล้ว!');
             });
         }
 
@@ -2246,10 +2870,18 @@
                     gpfCurrentFund: document.getElementById('gpf-current-fund')?.value,
                     gpfMemberPct: document.getElementById('gpf-member-pct')?.value,
                     gpfReturnPct: document.getElementById('gpf-return-pct')?.value,
+                    gpfPlanSelect: document.getElementById('gpf-plan-select')?.value,
                     paCurrentRank: document.getElementById('pa-current-rank')?.value,
                     paStartDate: document.getElementById('pa-start-date')?.value,
                     taxMonthlySalary: document.getElementById('tax-monthly-salary')?.value,
-                    taxMonthlyAllowance: document.getElementById('tax-monthly-allowance')?.value
+                    taxMonthlyAllowance: document.getElementById('tax-monthly-allowance')?.value,
+                    debtSalary: document.getElementById('debt-salary')?.value,
+                    debtAllowance: document.getElementById('debt-allowance')?.value,
+                    debtCoop: document.getElementById('debt-coop')?.value,
+                    debtBank: document.getElementById('debt-bank')?.value,
+                    debtGpf: document.getElementById('debt-gpf')?.value,
+                    debtChpk: document.getElementById('debt-chpk')?.value,
+                    debtOther: document.getElementById('debt-other')?.value
                 };
                 localStorage.setItem('kru_salary_calc_data', JSON.stringify(data));
             } catch (e) {}
@@ -2268,12 +2900,24 @@
                 if (d.simRank && document.getElementById('sim-rank')) document.getElementById('sim-rank').value = d.simRank;
                 if (d.simSalary && document.getElementById('sim-salary')) document.getElementById('sim-salary').value = d.simSalary;
                 if (d.gpfCurrentFund && document.getElementById('gpf-current-fund')) document.getElementById('gpf-current-fund').value = d.gpfCurrentFund;
-                if (d.gpfMemberPct && document.getElementById('gpf-member-pct')) document.getElementById('gpf-member-pct').value = d.gpfMemberPct;
+                if (d.gpfMemberPct && document.getElementById('gpf-member-pct')) {
+                    document.getElementById('gpf-member-pct').value = d.gpfMemberPct;
+                    if (document.getElementById('gpf-member-slider')) document.getElementById('gpf-member-slider').value = d.gpfMemberPct;
+                    if (document.getElementById('gpf-slider-val-badge')) document.getElementById('gpf-slider-val-badge').textContent = `${d.gpfMemberPct}%`;
+                }
                 if (d.gpfReturnPct && document.getElementById('gpf-return-pct')) document.getElementById('gpf-return-pct').value = d.gpfReturnPct;
+                if (d.gpfPlanSelect && document.getElementById('gpf-plan-select')) document.getElementById('gpf-plan-select').value = d.gpfPlanSelect;
                 if (d.paCurrentRank && document.getElementById('pa-current-rank')) document.getElementById('pa-current-rank').value = d.paCurrentRank;
                 if (d.paStartDate && document.getElementById('pa-start-date')) document.getElementById('pa-start-date').value = d.paStartDate;
                 if (d.taxMonthlySalary && document.getElementById('tax-monthly-salary')) document.getElementById('tax-monthly-salary').value = d.taxMonthlySalary;
                 if (d.taxMonthlyAllowance && document.getElementById('tax-monthly-allowance')) document.getElementById('tax-monthly-allowance').value = d.taxMonthlyAllowance;
+                if (d.debtSalary && document.getElementById('debt-salary')) document.getElementById('debt-salary').value = d.debtSalary;
+                if (d.debtAllowance && document.getElementById('debt-allowance')) document.getElementById('debt-allowance').value = d.debtAllowance;
+                if (d.debtCoop && document.getElementById('debt-coop')) document.getElementById('debt-coop').value = d.debtCoop;
+                if (d.debtBank && document.getElementById('debt-bank')) document.getElementById('debt-bank').value = d.debtBank;
+                if (d.debtGpf && document.getElementById('debt-gpf')) document.getElementById('debt-gpf').value = d.debtGpf;
+                if (d.debtChpk && document.getElementById('debt-chpk')) document.getElementById('debt-chpk').value = d.debtChpk;
+                if (d.debtOther && document.getElementById('debt-other')) document.getElementById('debt-other').value = d.debtOther;
             } catch (e) {}
         }
 
@@ -2284,6 +2928,7 @@
             runSimulation();
             calculatePA();
             calculateTax();
+            calculateDebt();
         };
     </script>
 
