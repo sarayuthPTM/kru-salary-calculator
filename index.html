@@ -65,6 +65,14 @@
             background-color: #f4f7fb;
             font-family: 'Prompt', sans-serif;
         }
+        /* Mobile swipeable tabs without visible scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
         .tab-active {
             background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
             color: #ffffff;
@@ -99,10 +107,10 @@
 
     <!-- Header -->
     <header class="bg-gradient-to-r from-navy-800 via-navy-700 to-navy-600 text-white shadow-lg no-print">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-400 text-2xl shadow-inner">
+                    <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-400 text-xl sm:text-2xl shadow-inner shrink-0">
                         <i class="fa-solid fa-chalkboard-user"></i>
                     </div>
                     <div>
@@ -113,28 +121,28 @@
                         <p class="text-xs sm:text-sm text-slate-300">คำนวณฐานบน-ล่าง ปัดเศษหลักสิบ จำลองเงินเดือนถึงอายุ 60 ปี และคำนวณบำนาญ</p>
                     </div>
                 </div>
-                <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
-                    <button onclick="switchTab('tab-single')" id="btn-tab-single" class="tab-btn tab-active px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 max-w-full sm:flex-wrap sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0 self-stretch sm:self-start md:self-auto">
+                    <button onclick="switchTab('tab-single')" id="btn-tab-single" class="tab-btn tab-active px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <i class="fa-solid fa-calculator"></i>
                         <span>คำนวณแต่ละรอบ</span>
                     </button>
-                    <button onclick="switchTab('tab-future')" id="btn-tab-future" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                    <button onclick="switchTab('tab-future')" id="btn-tab-future" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <i class="fa-solid fa-chart-line"></i>
                         <span>จำลองอนาคต & กบข.</span>
                     </button>
-                    <button onclick="switchTab('tab-pa')" id="btn-tab-pa" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                    <button onclick="switchTab('tab-pa')" id="btn-tab-pa" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <i class="fa-solid fa-hourglass-half text-gold-400"></i>
                         <span>นับเวลา วPA</span>
                     </button>
-                    <button onclick="switchTab('tab-tax')" id="btn-tab-tax" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                    <button onclick="switchTab('tab-tax')" id="btn-tab-tax" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <i class="fa-solid fa-receipt text-gold-400"></i>
                         <span>วางแผนภาษีครู</span>
                     </button>
-                    <button onclick="switchTab('tab-debt')" id="btn-tab-debt" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                    <button onclick="switchTab('tab-debt')" id="btn-tab-debt" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <i class="fa-solid fa-scale-balanced text-gold-400"></i>
                         <span>สุขภาพการเงิน & หนี้ 30%</span>
                     </button>
-                    <button onclick="switchTab('tab-ref')" id="btn-tab-ref" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                    <button onclick="switchTab('tab-ref')" id="btn-tab-ref" class="tab-btn bg-white/10 hover:bg-white/20 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <i class="fa-solid fa-table"></i>
                         <span>ตารางฐาน & เกณฑ์</span>
                     </button>
@@ -144,7 +152,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
 
         <!-- ==========================================
              TAB 1: คำนวณเลื่อนเงินเดือนแต่ละรอบ
@@ -153,7 +161,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 <!-- Left Column: Inputs -->
-                <div class="lg:col-span-5 bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                <div class="lg:col-span-5 bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
                         <h2 class="text-lg font-bold text-navy-800 flex items-center gap-2">
                             <i class="fa-solid fa-sliders text-gold-500"></i> ข้อมูลการเลื่อนเงินเดือน
@@ -165,13 +173,13 @@
                         <!-- เลือกอันดับ -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">1. อันดับ / วิทยฐานะปัจจุบัน</label>
-                            <div class="grid grid-cols-3 gap-2.5" id="rank-selector">
-                                <button type="button" onclick="selectSingleRank('ครูผู้ช่วย')" data-rank="ครูผู้ช่วย" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">ครูผู้ช่วย</button>
-                                <button type="button" onclick="selectSingleRank('คศ.1')" data-rank="คศ.1" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.1</button>
-                                <button type="button" onclick="selectSingleRank('คศ.2')" data-rank="คศ.2" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.2 (ชำนาญการ)</button>
-                                <button type="button" onclick="selectSingleRank('คศ.3')" data-rank="คศ.3" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.3 (ชำนาญการพิเศษ)</button>
-                                <button type="button" onclick="selectSingleRank('คศ.4')" data-rank="คศ.4" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.4 (เชี่ยวชาญ)</button>
-                                <button type="button" onclick="selectSingleRank('คศ.5')" data-rank="คศ.5" class="rank-btn py-2.5 px-3 rounded-xl border text-sm font-medium transition-all">คศ.5 (เชี่ยวชาญพิเศษ)</button>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5" id="rank-selector">
+                                <button type="button" onclick="selectSingleRank('ครูผู้ช่วย')" data-rank="ครูผู้ช่วย" class="rank-btn py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-center leading-tight">ครูผู้ช่วย</button>
+                                <button type="button" onclick="selectSingleRank('คศ.1')" data-rank="คศ.1" class="rank-btn py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-center leading-tight">คศ.1</button>
+                                <button type="button" onclick="selectSingleRank('คศ.2')" data-rank="คศ.2" class="rank-btn py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-center leading-tight">คศ.2 (ชำนาญการ)</button>
+                                <button type="button" onclick="selectSingleRank('คศ.3')" data-rank="คศ.3" class="rank-btn py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-center leading-tight">คศ.3 (ชำนาญการพิเศษ)</button>
+                                <button type="button" onclick="selectSingleRank('คศ.4')" data-rank="คศ.4" class="rank-btn py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-center leading-tight">คศ.4 (เชี่ยวชาญ)</button>
+                                <button type="button" onclick="selectSingleRank('คศ.5')" data-rank="คศ.5" class="rank-btn py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-center leading-tight">คศ.5 (เชี่ยวชาญพิเศษ)</button>
                             </div>
                         </div>
 
@@ -232,7 +240,7 @@
                 <!-- Right Column: Calculation Results -->
                 <div class="lg:col-span-7 flex flex-col gap-6">
                     <!-- Main Result Card -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90 relative overflow-hidden">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90 relative overflow-hidden">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100">
                             <div>
                                 <span id="res-tier-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
@@ -253,7 +261,7 @@
                         </div>
 
                         <!-- 3 Step Boxes -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 my-4 sm:my-6">
                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60">
                                 <div class="text-xs text-slate-500 mb-1">1. คำนวณตามจริง (ก่อนปัด)</div>
                                 <div id="res-raw-inc" class="text-lg font-bold text-slate-700">683.40 บาท</div>
@@ -296,7 +304,7 @@
                     </div>
 
                     <!-- Comparison Table across % -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-list-ol text-gold-500"></i> ตารางเปรียบเทียบถ้าได้เปอร์เซ็นต์ระดับต่างๆ ในรอบนี้
                         </h4>
@@ -321,7 +329,7 @@
             </div>
 
             <!-- ตารางจำลองการเลื่อนเงินเดือนทุกรอบ (เม.ย. & ต.ค.) ในหน้าคำนวณแต่ละรอบ -->
-            <div class="mt-6 bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+            <div class="mt-6 bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
                     <div>
                         <div class="flex items-center gap-2">
@@ -419,7 +427,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 <!-- Left Column: Simulator Settings -->
-                <div class="lg:col-span-4 bg-white rounded-2xl p-6 card-shadow border border-slate-200/90 h-fit no-print">
+                <div class="lg:col-span-4 bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90 h-fit no-print">
                     <h2 class="text-lg font-bold text-navy-800 border-b border-slate-100 pb-3 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-route text-gold-500"></i> ตั้งค่าจำลองอนาคตถึงอายุ 60 ปี
                     </h2>
@@ -613,82 +621,82 @@
                 <!-- Right Column: Simulation Dashboard & Table -->
                 <div class="lg:col-span-8 flex flex-col gap-6">
                     
-                    <!-- 4 Highlight Cards at Age 60 -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- 4 Highlight Cards at Age 60 (2x2 on mobile, 4 cols on desktop) -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                         
                         <!-- การ์ดที่ 1: เงินเดือนสุดท้าย -->
-                        <div class="bg-gradient-to-b from-navy-50/70 via-white to-white p-5 rounded-2xl card-shadow border border-navy-200/90 flex flex-col justify-between hover:border-navy-400 hover:shadow-md transition-all">
+                        <div class="bg-gradient-to-b from-navy-50/70 via-white to-white p-3.5 sm:p-5 rounded-2xl card-shadow border border-navy-200/90 flex flex-col justify-between hover:border-navy-400 hover:shadow-md transition-all">
                             <div>
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <span class="text-xs font-bold text-navy-800 flex items-center gap-2">
-                                        <span class="w-7 h-7 rounded-lg bg-navy-100 text-navy-800 flex items-center justify-center text-xs shadow-2xs">
+                                <div class="flex items-center justify-between gap-1.5 sm:gap-2 mb-2">
+                                    <span class="text-[11px] sm:text-xs font-bold text-navy-800 flex items-center gap-1.5 sm:gap-2 truncate">
+                                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-navy-100 text-navy-800 flex items-center justify-center text-[11px] sm:text-xs shadow-2xs shrink-0">
                                             <i class="fa-solid fa-graduation-cap"></i>
                                         </span>
-                                        <span>เงินเดือนสุดท้าย (อายุ 60)</span>
+                                        <span class="truncate">เงินเดือนสุดท้าย (อายุ 60)</span>
                                     </span>
-                                    <span class="w-2 h-2 rounded-full bg-navy-600"></span>
+                                    <span class="w-2 h-2 rounded-full bg-navy-600 shrink-0"></span>
                                 </div>
-                                <div id="sim-final-salary" class="text-2xl sm:text-2xl xl:text-3xl font-black text-navy-900 tracking-tight mt-1">69,040 ฿</div>
+                                <div id="sim-final-salary" class="text-xl sm:text-2xl xl:text-3xl font-black text-navy-900 tracking-tight mt-1">69,040 ฿</div>
                             </div>
-                            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center">
-                                <span id="sim-final-rank" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-navy-50 text-navy-700 border border-navy-200/80">อันดับสุดท้าย: คศ.3</span>
+                            <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center">
+                                <span id="sim-final-rank" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-md text-[10px] sm:text-[11px] font-semibold bg-navy-50 text-navy-700 border border-navy-200/80 truncate">อันดับสุดท้าย: คศ.3</span>
                             </div>
                         </div>
 
                         <!-- การ์ดที่ 2: รายรับรวม/เดือน ตอนเกษียณ -->
-                        <div class="bg-gradient-to-b from-emerald-50/70 via-white to-white p-5 rounded-2xl card-shadow border border-emerald-200/90 flex flex-col justify-between hover:border-emerald-400 hover:shadow-md transition-all">
+                        <div class="bg-gradient-to-b from-emerald-50/70 via-white to-white p-3.5 sm:p-5 rounded-2xl card-shadow border border-emerald-200/90 flex flex-col justify-between hover:border-emerald-400 hover:shadow-md transition-all">
                             <div>
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <span class="text-xs font-bold text-emerald-900 flex items-center gap-2">
-                                        <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs shadow-2xs">
+                                <div class="flex items-center justify-between gap-1.5 sm:gap-2 mb-2">
+                                    <span class="text-[11px] sm:text-xs font-bold text-emerald-900 flex items-center gap-1.5 sm:gap-2 truncate">
+                                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-[11px] sm:text-xs shadow-2xs shrink-0">
                                             <i class="fa-solid fa-wallet"></i>
                                         </span>
-                                        <span>รายรับรวม/เดือน ตอนเกษียณ</span>
+                                        <span class="truncate">รายรับรวม/เดือน ตอนเกษียณ</span>
                                     </span>
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                                 </div>
-                                <div id="sim-final-total" class="text-2xl sm:text-2xl xl:text-3xl font-black text-emerald-600 tracking-tight mt-1">80,240 ฿</div>
+                                <div id="sim-final-total" class="text-xl sm:text-2xl xl:text-3xl font-black text-emerald-600 tracking-tight mt-1">80,240 ฿</div>
                             </div>
-                            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center">
-                                <span id="sim-final-allowance" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">รวมวิทยฐานะ+ค่าตอบแทน</span>
+                            <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center">
+                                <span id="sim-final-allowance" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-md text-[10px] sm:text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 truncate">รวมวิทยฐานะ+ค่าตอบแทน</span>
                             </div>
                         </div>
 
                         <!-- การ์ดที่ 3: บำนาญรายเดือน (ประมาณการ) -->
-                        <div class="bg-gradient-to-b from-blue-50/70 via-white to-white p-5 rounded-2xl card-shadow border border-blue-200/90 flex flex-col justify-between hover:border-blue-400 hover:shadow-md transition-all">
+                        <div class="bg-gradient-to-b from-blue-50/70 via-white to-white p-3.5 sm:p-5 rounded-2xl card-shadow border border-blue-200/90 flex flex-col justify-between hover:border-blue-400 hover:shadow-md transition-all">
                             <div>
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <span class="text-xs font-bold text-blue-900 flex items-center gap-2">
-                                        <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-xs shadow-2xs">
+                                <div class="flex items-center justify-between gap-1.5 sm:gap-2 mb-2">
+                                    <span class="text-[11px] sm:text-xs font-bold text-blue-900 flex items-center gap-1.5 sm:gap-2 truncate">
+                                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-[11px] sm:text-xs shadow-2xs shrink-0">
                                             <i class="fa-solid fa-hand-holding-dollar"></i>
                                         </span>
-                                        <span>บำนาญรายเดือน (ประมาณการ)</span>
+                                        <span class="truncate">บำนาญรายเดือน (ประมาณการ)</span>
                                     </span>
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
                                 </div>
-                                <div id="sim-pension" class="text-2xl sm:text-2xl xl:text-3xl font-black text-blue-700 tracking-tight mt-1">45,800 ฿</div>
+                                <div id="sim-pension" class="text-xl sm:text-2xl xl:text-3xl font-black text-blue-700 tracking-tight mt-1">45,800 ฿</div>
                             </div>
-                            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center">
-                                <span id="sim-pension-desc" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/80">อายุราชการรวม 35 ปี (70%)</span>
+                            <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center">
+                                <span id="sim-pension-desc" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-md text-[10px] sm:text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/80 truncate">อายุราชการรวม 35 ปี (70%)</span>
                             </div>
                         </div>
 
                         <!-- การ์ดที่ 4: อายุที่เงินเดือนเริ่มตัน (เต็มขั้น) -->
-                        <div class="bg-gradient-to-b from-amber-50/70 via-white to-white p-5 rounded-2xl card-shadow border border-amber-200/90 flex flex-col justify-between hover:border-amber-400 hover:shadow-md transition-all">
+                        <div class="bg-gradient-to-b from-amber-50/70 via-white to-white p-3.5 sm:p-5 rounded-2xl card-shadow border border-amber-200/90 flex flex-col justify-between hover:border-amber-400 hover:shadow-md transition-all">
                             <div>
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <span class="text-xs font-bold text-amber-900 flex items-center gap-2">
-                                        <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-xs shadow-2xs">
+                                <div class="flex items-center justify-between gap-1.5 sm:gap-2 mb-2">
+                                    <span class="text-[11px] sm:text-xs font-bold text-amber-900 flex items-center gap-1.5 sm:gap-2 truncate">
+                                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-[11px] sm:text-xs shadow-2xs shrink-0">
                                             <i class="fa-solid fa-stopwatch"></i>
                                         </span>
-                                        <span>อายุที่เงินเดือนเริ่มตัน (เต็มขั้น)</span>
+                                        <span class="truncate">อายุที่เงินเดือนเริ่มตัน (เต็มขั้น)</span>
                                     </span>
-                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                    <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
                                 </div>
-                                <div id="sim-max-age" class="text-2xl sm:text-2xl xl:text-3xl font-black text-amber-600 tracking-tight mt-1">อายุ 54 ปี</div>
+                                <div id="sim-max-age" class="text-xl sm:text-2xl xl:text-3xl font-black text-amber-600 tracking-tight mt-1">อายุ 54 ปี</div>
                             </div>
-                            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center">
-                                <span id="sim-max-desc" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/80">ได้รับเงินตอบแทนพิเศษแทน</span>
+                            <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center">
+                                <span id="sim-max-desc" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-md text-[10px] sm:text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/80 truncate">ได้รับเงินตอบแทนพิเศษแทน</span>
                             </div>
                         </div>
                     </div>
@@ -748,7 +756,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="flex flex-wrap items-center gap-3 bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 shadow-xs shrink-0">
+                            <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-3 bg-amber-50/80 p-3 sm:p-3.5 rounded-xl border border-amber-200 shadow-xs shrink-0">
                                 <div>
                                     <div class="text-[10px] text-slate-500 font-medium">เงินก้อน กบข. งอกเงยเพิ่มขึ้น</div>
                                     <div id="gpf-compare-diff-badge" class="text-base sm:text-xl font-black text-emerald-700">+0 ฿</div>
@@ -762,7 +770,7 @@
                     </div>
 
                     <!-- วิเคราะห์เปรียบเทียบ บำเหน็จ VS บำนาญ + เงินก้อน กบข. -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-4">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-lg bg-navy-100 text-navy-700 flex items-center justify-center text-sm font-bold">
@@ -855,7 +863,7 @@
                     </div>
 
                     <!-- Interactive Target Age Lookup -->
-                    <div class="bg-amber-50/90 border-2 border-amber-300/80 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="bg-amber-50/90 border-2 border-amber-300/80 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">
                                 <i class="fa-solid fa-magnifying-glass-dollar"></i>
@@ -872,7 +880,7 @@
                     </div>
 
                     <!-- Chart Section -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-bold text-navy-800 flex items-center gap-2">
                                 <i class="fa-solid fa-chart-area text-gold-500"></i> กราฟจำลองการเติบโตของเงินเดือนและรายรับรวมถึงอายุ 60 ปี
@@ -884,7 +892,7 @@
                     </div>
 
                     <!-- Year-by-Year Table -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                             <div>
                                 <h3 class="text-base font-bold text-navy-800">ตารางจำลองการเลื่อนเงินเดือนทุกรอบ (เม.ย. & ต.ค.)</h3>
@@ -937,7 +945,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 <!-- Left Column: Inputs -->
-                <div class="lg:col-span-5 bg-white rounded-2xl p-6 card-shadow border border-slate-200/90 h-fit">
+                <div class="lg:col-span-5 bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90 h-fit">
                     <div class="border-b border-slate-100 pb-3 mb-5">
                         <span class="text-xs font-bold text-navy-700 bg-navy-50 px-2.5 py-1 rounded-md border border-navy-100">
                             ก.ค.ศ. ว9/2564 & ว16/2564
@@ -1014,7 +1022,7 @@
                 <div class="lg:col-span-7 flex flex-col gap-6">
                     
                     <!-- Main Status Card -->
-                    <div id="pa-status-card" class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90 relative overflow-hidden transition-all">
+                    <div id="pa-status-card" class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90 relative overflow-hidden transition-all">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100">
                             <div>
                                 <span id="pa-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
@@ -1029,7 +1037,7 @@
                         </div>
 
                         <!-- 3 Big Metric Boxes -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 my-4 sm:my-6">
                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60">
                                 <div class="text-xs text-slate-500 mb-1">ระยะเวลาครองตำแหน่งแล้ว</div>
                                 <div id="pa-elapsed-text" class="text-lg font-bold text-navy-800">2 ปี 3 เดือน 15 วัน</div>
@@ -1065,7 +1073,7 @@
                     </div>
 
                     <!-- PA Evaluation Cycles Required -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-list-check text-gold-500"></i> รอบการประเมิน PA ที่ต้องใช้แนบในระบบ DPA
                         </h4>
@@ -1075,7 +1083,7 @@
                     </div>
 
                     <!-- DPA Submission Requirements Guide -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-folder-open text-navy-600"></i> สิ่งที่ต้องเตรียมยื่นในระบบ DPA (ว9/2564)
                         </h4>
@@ -1105,7 +1113,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 <!-- Left Column: Inputs -->
-                <div class="lg:col-span-6 bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                <div class="lg:col-span-6 bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-5 border-b border-slate-100 gap-2">
                         <div>
                             <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
@@ -1245,7 +1253,7 @@
                 <div class="lg:col-span-6 flex flex-col gap-6">
                     
                     <!-- Main Tax Highlight Card -->
-                    <div class="bg-gradient-to-br from-navy-800 via-navy-700 to-navy-900 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="bg-gradient-to-br from-navy-800 via-navy-700 to-navy-900 text-white rounded-2xl p-4 sm:p-6 shadow-xl relative overflow-hidden">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4 mb-5">
                             <div>
                                 <span id="tax-bracket-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
@@ -1260,7 +1268,7 @@
                         </div>
 
                         <!-- 3 Metric Numbers -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 my-3 sm:my-4">
                             <div class="bg-white/10 rounded-xl p-3.5 border border-white/10">
                                 <div class="text-[11px] text-slate-300">ภาษีสุทธิที่ต้องจ่ายทั้งปี</div>
                                 <div id="tax-total-payable" class="text-2xl font-extrabold text-gold-400 mt-1">0 ฿</div>
@@ -1300,7 +1308,7 @@
                     </div>
 
                     <!-- Progressive Tax Brackets Table -->
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <h4 class="text-sm font-bold text-navy-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-stairs text-gold-500"></i> ตารางแจกแจงภาษีตามอัตราขั้นบันได (กรมสรรพากร)
                         </h4>
@@ -1342,7 +1350,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
                 <!-- Official Table matching the uploaded image -->
-                <div class="lg:col-span-7 bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                <div class="lg:col-span-7 bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                     <div class="border-b border-slate-100 pb-4 mb-5">
                         <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">ตารางมาตรฐาน ก.ค.ศ.</span>
                         <h2 class="text-lg font-bold text-navy-900 mt-2">ฐานในการคำนวณและช่วงเงินเดือนสำหรับการเลื่อนเงินเดือน</h2>
@@ -1446,7 +1454,7 @@
 
                 <!-- Essential Knowledge & What else is needed -->
                 <div class="lg:col-span-5 space-y-5">
-                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                    <div class="bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                         <h3 class="text-base font-bold text-navy-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-lightbulb text-gold-500"></i> หลักเกณฑ์สำคัญที่ระบบคำนวณให้อัตโนมัติ
                         </h3>
@@ -1499,7 +1507,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 <!-- Left Column: Inputs รายรับ & ภาระหนี้ -->
-                <div class="lg:col-span-5 bg-white rounded-2xl p-6 card-shadow border border-slate-200/90">
+                <div class="lg:col-span-5 bg-white rounded-2xl p-4 sm:p-6 card-shadow border border-slate-200/90">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
                         <div>
                             <h2 class="text-lg font-bold text-navy-800 flex items-center gap-2">
@@ -1810,6 +1818,9 @@
             if (activeBtn) {
                 activeBtn.classList.add('tab-active');
                 activeBtn.classList.remove('bg-white/10');
+                if (typeof activeBtn.scrollIntoView === 'function') {
+                    activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
             }
 
             if (tabId === 'tab-future') {
